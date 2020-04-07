@@ -1,0 +1,6 @@
+{
+    "BookingsModule": true,
+    "Booking": true,
+    "Product": true,
+    "AboutProduct": true
+}

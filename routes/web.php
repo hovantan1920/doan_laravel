@@ -1,0 +1,56 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('index');
+});
+
+Route::group(['prefix' => 'cus'], function () {
+    Route::get('/', 'CustomerAccountController@pageLogin')  
+        ->name('cus-login')->middleware('cus.logout');
+    Route::get('register', 'CustomerAccountController@pageRegister')
+        ->name('cus-register')->middleware('cus.logout');
+    Route::get('profile', 'CustomerAccountController@pageProfile')
+        ->name('cus-profile')->middleware('cus.login');
+
+    Route::get('logout', 'CustomerAccountController@logoutAccount')->name('cus-logout');
+
+    Route::resource('cus-handle', 'CustomerAccountController');
+    Route::get('confirm/{mytoken?}/{id?}', 'CustomerAccountController@confirmEmail');
+    Route::get('sendMail', 'CustomerAccountController@sendMailReset');
+    Route::get('resetPass/{myToken?}/{email?}', 'CustomerAccountController@resetPassword');
+});
+
+Route::group(['prefix' => 'admin/account', 'middleware'=>'admin.logout'], function () {
+    Route::get('/', 'AdminAccountController@pageLogin')->name('admin-login');
+    Route::get('forget', 'AdminAccountController@pageForget')->name('admin-forget');
+    Route::get('logout', 'AdminAccountController@logout')->name('admin-logout');
+    Route::get('resetpassword/{myToken?}/{email?}', 'AdminAccountController@pageResetPass');
+    Route::resource('handleadmin', 'AdminAccountController');
+});
+
+//Router page admin
+Route::group(['prefix'=>'admin', 'middleware'=>'admin.login'], function(){
+
+    Route::get('/', 'AdminController@home')->name('cooladmin');
+    Route::group(['prefix'=>'user'], function(){
+        Route::get('/', 'AdminController@user');
+        Route::get('roles', 'AdminController@roles');
+        Route::get('permissions', 'AdminController@permissions');
+    });
+
+    //Route for ajax:
+    Route::group(['prefix'=>'ajax', 'middleware'=>'admin.login'], function(){
+        Route::resource('admin-users', 'UserController');
+    });
+});
