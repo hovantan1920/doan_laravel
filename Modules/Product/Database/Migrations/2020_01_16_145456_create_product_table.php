@@ -21,7 +21,7 @@ class CreateProductTable extends Migration
             $table->integer('prices');
             $table->integer('gallery_id')->unsigned();
             $table->timestamps();
-            $table->foreign('gallery_id')->references('id')->on('gallerys');
+            $table->foreign('gallery_id')->references('id')->on('gallery');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product');
+        Schema::dropIfExists('products');
     }
 }

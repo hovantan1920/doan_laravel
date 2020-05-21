@@ -47,13 +47,25 @@
         <form>
           @csrf
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Title item:</label>
+            <label for="recipient-name" class="col-form-label">Title</label>
             <input type="text" class="form-control" id="input-title" name="title-categorie">
           </div>
           <div class="form-group">
-            <label for="message-text" class="col-form-label">Descride:</label>
-            <textarea class="form-control" id="area-descride"></textarea>
+            <label for="recipient-name" class="col-form-label">Image</label>
+            <input type="text" class="form-control" id="input-image">
           </div>
+          <div class="form-group">
+            <div class="form-group">
+              <label for="message-text" class="col-form-label">Description</label>
+              <textarea class="form-control" id="area-descride"></textarea>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Active</label>
+            <input type="number" class="form-control" id="select-active">
+          </div>
+          <label for="recipient-name" class="col-form-label">ParentID</label>
+          <input type="number" class="form-control" id="select-parent">
           <input type="submit" id="input-id" name="input-id" value="0" hidden>
         </form>
       </div>
@@ -145,16 +157,19 @@
 
                 $id       = $("#input-id").val();
                 $title    = $.trim($("#input-title").val());
+                $image    = $.trim($("#input-image").val());
+                $parent_id    = $.trim($("#select-parent").val());
+                $active    = $.trim($("#select-active").val());
                 $descride = $("#area-descride").val();
                 $token    = $("input[name = '_token']").val();
 
                 if($("#btn-send").text() == "Update"){
                     if(show_Warring()){
-                        crud_Item("update", $id, $title, $descride, $token);
+                        crud_Item("update", $id, $title, $image, $active, $parent_id, $descride, $token);
                     }
                 }else {
                     if(show_Warring()){
-                        crud_Item("insert", $id, $title, $descride, $token);
+                        crud_Item("insert", $id, $title, $image, $active, $parent_id, $descride, $token);
                     }
                 }    
             });
@@ -169,7 +184,7 @@
         function del_Item($id){
             if(confirm("You waint delete it?")){
                 var token = $("input[name = '_token']").val();
-                crud_Item("delete", $id, "_", "_", token);
+                crud_Item("delete", $id, "_", "_", "_", "_", "_", token);
             }
         }
 
@@ -225,6 +240,9 @@
             $("#btn-send").text('Add');
             $("#input-id").val(0);
             $("#input-title").val("");
+            $("#input-image").val("");
+            $("#select_active").val(1);
+            $("#select_parent").val(0);
             $("#area-descride").val("");
         }
 
@@ -235,8 +253,7 @@
             get_Item($id);
         }
 
-        function crud_Item($action, $id, $title, $descride, $token){
-                        
+        function crud_Item($action, $id, $title, $image, $active, $parent_id, $descride, $token){      
             $.post(
             url,
             {
@@ -244,10 +261,12 @@
               action  : $action, 
               id      : $id,
               title   : $title,
+              image   : $image,
+              active  : $active,
+              parent_id: $parent_id,
               descride: $descride
             },
             function(data, status){
-              
             }).done(function(){
                 $("#div-notify").addClass("d-none");
                 show_Alert_Success();
@@ -283,10 +302,13 @@
             function(data, status){
               if (status == "success") {
                 $("#div-notify").addClass("d-none");
-                try{
+                try{    
                     var categorie = jQuery.parseJSON(data);
                     $("#input-id").val(categorie.id);
                     $("#input-title").val(categorie.title);
+                    $("#input-image").val(categorie.image);
+                    $("#select_active").val(categorie.active);
+                    $("#select_parent").val(categorie.parent_id);
                     $("#area-descride").val(categorie.descride); 
                 }
                 catch(e){

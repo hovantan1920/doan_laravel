@@ -7,6 +7,23 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
+## Hướng dẫn cài đặt
+1. clone dự án về máy
+2. Copy file mới tên là .env dựa trên file .env.example và thay đổi các tham số phù hợp
+3. Chạy lệnh update các package - <b>composer install</b>
+4. Chạy lệnh: <b>php artisan key:generate</b>  - để tạo application key
+5. Chạy lênh: <b>php artisan migrate</b> - để khởi tạo database ban đầu
+6. Chạy lệnh: <b>php artisan storage:link</b> - để tạo <b>symbolic link</b> đến từ folder <i>storage/app/public</i> đến folder <i>public/storage</i>
+7. Chạy lệnh: <b>php artisan db:seed</b> - để khởi tạo tải khoản và dữ liệu demo
+
+## Về dự án:
+- Sử dụng bản Laravel 5.5
+- Giao diện Tiếng Việt
+- Tích hợp theme AdminLTE cho giao diện https://adminlte.io/themes/AdminLTE/index2.html
+- Sử dụng bootstrap 3
+- Sử dụng module kyslik/column-sortable cho phần sort ở table
+- Sử dụng module intervention/image để resize ảnh
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

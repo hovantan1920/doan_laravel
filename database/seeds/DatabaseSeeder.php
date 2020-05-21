@@ -65,21 +65,21 @@ class DatabaseSeeder extends Seeder
         DB::table('roles_permissions')->insert($roles_permission);
 
         $user = [[
-            'name'=>'user01',
-            'email'=>'admin@exemple.com',
-            'password'=>bcrypt('111111'),
+            'name'=>'administrator',
+            'email'=>'admin@example.com',
+            'numberphone'=>'0979629201',
+            'active' => 1,
+            'avatar' => 'https://firebasestorage.googleapis.com/v0/b/pbanana-38db9.appspot.com/o/avatar%2Fimg_12.png?alt=media',
+            'password'=>bcrypt('123456'),
             'roles_id'=>'1'
         ],
         [
-            'name'=>'user02',
-            'email'=>'adminsubr@exemple.com',
-            'password'=>bcrypt('111111'),
-            'roles_id'=>'2'
-        ],
-        [
+            'numberphone'=>'0979629202',
+            'active' => 1,
+            'avatar' => 'https://firebasestorage.googleapis.com/v0/b/pbanana-38db9.appspot.com/o/avatar%2Fimg_12.png?alt=media',
+            'password'=>bcrypt('123456'),
             'name'=>'customer',
-            'email'=>'customer@exemple.com',
-            'password'=>bcrypt('111111'),
+            'email'=>'customer@example.com',
             'roles_id'=>'3'
         ]];
         DB::table('users')->insert($user);

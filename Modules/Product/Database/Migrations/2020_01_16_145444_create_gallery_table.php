@@ -13,13 +13,13 @@ class CreateGalleryTable extends Migration
      */
     public function up()
     {
-        Schema::create('gallerys', function (Blueprint $table) {
+        Schema::create('gallery', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title', '150');
             $table->string('descride');
-            $table->integer('categorie_id')->unsigned();
+            $table->integer('category_id')->unsigned();
             $table->timestamps();
-            $table->foreign('categorie_id')->references('id')->on('categories');
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 

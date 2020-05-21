@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\DB;
 class Category extends Model
 {
     protected $table    = 'Categories';
-    protected $fillable = ['id', 'title', 'descride'];
+    protected $fillable = ['id', 'title', 'descride', 'image', 'active', 'parent_id'];
 
-    public static function myInsert($title, $descride){
+    public static function myInsert($title, $descride, $image, $active, $parent_id){
         try {
             $obj = new static;
             $obj->title = $title;
+            $obj->image = $image;
+            $obj->active = (int) $active;
+            $obj->parent_id = $parent_id;
             $obj->descride = $descride;
             $obj->save();
         } catch (\Throwable $th) {
@@ -22,10 +25,13 @@ class Category extends Model
         return true;
     }
 
-    public static function myUpdate($id, $title, $descride){
+    public static function myUpdate($id, $title, $descride, $image, $active, $parent_id){
         try {
             $obj = static::find($id);
             $obj->title    = $title;
+            $obj->image = $image;
+            $obj->active = $active;
+            $obj->parent_id = $parent_id;
             $obj->descride = $descride;
             $obj->save(); 
         } catch (\Throwable $th) {

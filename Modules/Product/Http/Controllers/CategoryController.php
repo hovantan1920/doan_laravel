@@ -46,6 +46,9 @@ class CategoryController extends Controller
         $id       = $request->id;
         $title    = $request->title;
         $descride = $request->descride;
+        $image    = $request->image;
+        $active   = $request->active;
+        $parent_id= $request->parent_id;
 
         $property = $request->property;
         $value    = $request->value;
@@ -55,10 +58,10 @@ class CategoryController extends Controller
         
         switch($action){
             case "insert":
-                $status = $category->myInsert($title, $descride);
+                $status = $category->myInsert($title, $descride, $image, $active, $parent_id);
                 break;
             case "update":
-                $status = $category->myUpdate($id, $title, $descride);
+                $status = $category->myUpdate($id, $title, $descride, $image, $active, $parent_id);
                 break; 
             case "delete":
                 $status    = $category->myDelete($id);
