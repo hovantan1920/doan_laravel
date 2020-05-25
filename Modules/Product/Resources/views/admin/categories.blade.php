@@ -1,7 +1,7 @@
 @extends('product::admin.layout.cool-admin')
 
 @section('title-website')
-    Categaries - Manage
+    Categories
 @endsection
 
 @section('modal')
@@ -57,7 +57,7 @@
           <div class="form-group">
             <div class="form-group">
               <label for="message-text" class="col-form-label">Description</label>
-              <textarea class="form-control" id="area-descride"></textarea>
+              <textarea class="form-control" id="area-description"></textarea>
             </div>
           </div>
           <div class="form-group">
@@ -126,7 +126,8 @@
                         <th>serial</th>
                         <th>title</th>
                         <th>descride</th>
-                        <th>created</th>
+                        <th>active</th>
+                        <th>parent</th>
                         <th>updated</th>
                         <th>action</th>
                     </tr>
@@ -149,7 +150,7 @@
     <script>
         var page = 
         <?php $page = 1; if(isset($_GET['page'])) $page = $_GET['page']; echo $page; ?>; 
-        var url  = "{{route('admin-categories.store').'?page='}}" + page;
+        var url  = "";
         
         $(document).ready(function(){
 
@@ -157,20 +158,18 @@
 
                 $id       = $("#input-id").val();
                 $title    = $.trim($("#input-title").val());
-                $image    = $.trim($("#input-image").val());
+                $image_source    = $.trim($("#input-image").val());
                 $parent_id    = $.trim($("#select-parent").val());
                 $active    = $.trim($("#select-active").val());
-                $descride = $("#area-descride").val();
+                $description = $("#area-description").val();
                 $token    = $("input[name = '_token']").val();
 
-                if($("#btn-send").text() == "Update"){
-                    if(show_Warring()){
-                        crud_Item("update", $id, $title, $image, $active, $parent_id, $descride, $token);
-                    }
+                if($("#btn-send").text() == "UPDATE"){
+                    if(show_Warring())
+                        update($id, $title, $image_source, $active, $parent_id, $description, $token);
                 }else {
-                    if(show_Warring()){
-                        crud_Item("insert", $id, $title, $image, $active, $parent_id, $descride, $token);
-                    }
+                    if(show_Warring())
+                        create($title, $image_source, $active, $parent_id, $description, $token);
                 }    
             });
 
@@ -181,10 +180,140 @@
             });
         });
 
-        function del_Item($id){
+        function create($title, $image_source, $active, $parent_id, $description, $token){
+            $.post(
+            "{{route('categories.store').'?page='}}" + page,
+            {
+              _token  : $token, 
+              title   : $title,
+              image_source   : $image_source,
+              active  : $active,
+              parent_id: $parent_id,
+              description: $description
+            },
+            function(data, status){
+                if(data['success']){
+                    $("#div-notify").addClass("d-none");
+                    show_Alert_Success();
+                    $("#btn-close").click();
+                }
+                else{
+                    msg = "Error insert!";
+                    $("#div-notify").removeClass("d-none");
+                    show_Alert_Warning(msg);
+                }
+                set_Loop_Hidden();
+            }).done(function(){
+                
+            }).fail(function(xhr, status, error){
+                switch(xhr.status){
+                    case 500:
+                        msg = "Error server!";
+                        break;
+                    default:
+                        msg = "Error server!";
+                        break;   
+                }
+                if($action == "insert" || $action == "update")
+                    $("#div-notify").removeClass("d-none");
+                show_Alert_Warning(msg);
+                set_Loop_Hidden();
+            });
+        }
+        function showDialogUpdate($id){
+            $("#btn-send").text('UPDATE');
+            $("#input-id").val($id);
+
+            getItem($id);
+        }
+        function getItem($id){
+            var url = "{{route('categories.show', 0)}}" + $id + "?page=" + page; 
+            $.ajax({
+                url : url,
+                type: 'GET',
+                success: function ($data){
+                    if ($data['success']) {
+                        $("#div-notify").addClass("d-none");
+                        try{    
+                            $("#input-id").val($data['result']['id']);
+                            $("#input-title").val($data['result']['title']);
+                            $("#input-image").val($data['result']['image_source']);
+                            $("#select-active").val($data['result']['active']);
+                            $("#select-parent").val($data['result']['parent_id']);
+                            $("#area-description").val($data['result']['description']); 
+                        }
+                        catch(e){
+                            console.log(e);
+                            $("#div-notify-get").removeClass("d-none");
+                        }
+                    }
+                    else
+                        $("#div-notify-get").removeClass("d-none");
+                },
+                error: function ($error) {
+
+                }
+            });
+        }
+
+        function update($id, $title, $image_source, $active, $parent_id, $description, $token){
+            var url = "{{route('categories.update', 0)}}" + $id; 
+            $.ajax({
+                url: url,
+                type: 'PUT',
+                data: {
+                    _token  : $token, 
+                    title   : $title,
+                    image_source   : $image_source,
+                    active  : $active,
+                    parent_id: $parent_id,
+                    description: $description
+                },
+                error: function(error){
+                    show_Alert_Warning('Error...');
+                    set_Loop_Hidden();
+                },
+                success: function(data) {
+                    if(data['success']){
+                        $("#div-notify").addClass("d-none");
+                        show_Alert_Success();
+                        $("#btn-close").click();
+                    }
+                    else{
+                        console.log(data['msg']);
+                        $("#div-notify").removeClass("d-none");
+                        show_Alert_Warning('Error...');
+                    }
+                    set_Loop_Hidden();
+                }
+            });
+        }
+
+        function remove($id){
             if(confirm("You waint delete it?")){
                 var token = $("input[name = '_token']").val();
-                crud_Item("delete", $id, "_", "_", "_", "_", "_", token);
+                var url = "{{route('categories.destroy', 0)}}" + $id; 
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        _token  : token, 
+                    },
+                    error: function(error){
+                        show_Alert_Warning('Error...');
+                        set_Loop_Hidden();
+                    },
+                    success: function(data) {
+                        if(data['success']){
+                            show_Alert_Success();
+                        }
+                        else{
+                            console.log(data['msg']);
+                            show_Alert_Warning('Error...');
+                        }
+                        set_Loop_Hidden();
+                    }
+                });
             }
         }
 
@@ -246,86 +375,12 @@
             $("#area-descride").val("");
         }
 
-        function show_Dialog_Update($id){
-            $("#btn-send").text('Update');
-            $("#input-id").val($id);
-
-            get_Item($id);
-        }
-
-        function crud_Item($action, $id, $title, $image, $active, $parent_id, $descride, $token){      
-            $.post(
-            url,
-            {
-              _token  : $token, 
-              action  : $action, 
-              id      : $id,
-              title   : $title,
-              image   : $image,
-              active  : $active,
-              parent_id: $parent_id,
-              descride: $descride
-            },
-            function(data, status){
-            }).done(function(){
-                $("#div-notify").addClass("d-none");
-                show_Alert_Success();
-                $("#btn-close").click();
-                set_Loop_Hidden();
-            }).fail(function(xhr, status, error){
-                switch(xhr.status){
-                    case 500:
-                        msg = "Error server!";
-                        break;
-                    default:
-                        msg = "Error server!";
-                        break;   
-                }
-                if($action == "insert" || $action == "update")
-                    $("#div-notify").removeClass("d-none");
-                show_Alert_Warning(msg);
-                set_Loop_Hidden();
-            });
-        }
-
-        function get_Item($id){
-            
-            $.post(
-            url,
-            {
-              _token  : $("input[name = '_token']").val(), 
-              action  : "find-one", 
-              id      : $id,
-              title   : "_",
-              descride: "_"
-            },
-            function(data, status){
-              if (status == "success") {
-                $("#div-notify").addClass("d-none");
-                try{    
-                    var categorie = jQuery.parseJSON(data);
-                    $("#input-id").val(categorie.id);
-                    $("#input-title").val(categorie.title);
-                    $("#input-image").val(categorie.image);
-                    $("#select_active").val(categorie.active);
-                    $("#select_parent").val(categorie.parent_id);
-                    $("#area-descride").val(categorie.descride); 
-                }
-                catch(e){
-                    $("#div-notify-get").removeClass("d-none");
-                }
-              }
-              else
-                $("#div-notify-get").removeClass("d-none");
-            });
-        }
-
         function show_Warring(){
             if($.trim($("#input-title").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }
-            if($.trim($("#area-descride").val()).length < 1){
+            if($.trim($("#area-description").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }

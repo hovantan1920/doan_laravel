@@ -15,11 +15,11 @@ class CreateGalleryTable extends Migration
     {
         Schema::create('gallery', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title', '150');
-            $table->string('descride');
-            $table->integer('category_id')->unsigned();
+            $table->integer('index');
+            $table->string('image_source');
+            $table->integer('product_id')->unsigned();
             $table->timestamps();
-            $table->foreign('category_id')->references('id')->on('categories');
+            $table->foreign('product_id')->references('id')->on('products');
         });
     }
 

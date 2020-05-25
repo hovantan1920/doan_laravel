@@ -2,5 +2,7 @@
     "BookingsModule": true,
     "Booking": true,
     "Product": true,
-    "AboutProduct": true
+    "AboutProduct": true,
+    "Migration": true,
+    "CreateGalleryTable": true
 }

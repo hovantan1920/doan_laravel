@@ -29,8 +29,6 @@
                 </div>
             </div>
         </div>
-
-        //Include modal popup edit row
         @yield('modal')
     </div>
     

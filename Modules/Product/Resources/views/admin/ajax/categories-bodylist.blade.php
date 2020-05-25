@@ -1,22 +1,24 @@
 <?php  
     $i=0;
 ?>
-@foreach($list as $categarie)
+@foreach($list as $cate)
     <?php 
         $i++;
     ?>
     <tr class="tr-shadow">
         <td>{{$i}}</td>
-        <td>{{$categarie['title']}}</td>
-        <td class="text-right">{{$categarie['descride']}}</td>
-        <td class="text-right">{{$categarie['created_at']}}</td>
-        <td class="text-right">{{$categarie['updated_at']}}</td>
+        <td>{{$cate['title']}}</td>
+        <td class="text-right">{{$cate['description']}}</td>
+        <td class="text-right">{{$cate['active']}}</td>
+        <td class="text-right">{{$cate['parent_id']}}</td>
+        <td class="text-right">{{$cate['updated_at']}}</td>
         <td>
             <div class="table-data-feature">
-            <button class="item" title="Edit" data-toggle="modal" data-target="#modal" id="btn-edit" onclick="show_Dialog_Update({{$categarie['id']}})">
+            <button class="item" title="Edit" data-toggle="modal" data-target="#modal" id="btn-edit" 
+            onclick="showDialogUpdate({{$cate['id']}})">
                     <i class="zmdi zmdi-edit"></i>
                 </button>
-                <button class="item" title="Delete" onclick="del_Item({{$categarie['id']}})">
+                <button class="item" title="Delete" onclick="remove({{$cate['id']}})">
                     <i class="zmdi zmdi-delete"></i>
                 </button>
                 <button class="item" title="More">

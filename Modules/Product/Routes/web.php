@@ -11,19 +11,17 @@
 |
 */
 
-Route::prefix('product')->group(function() {
-    Route::get('/', 'ProductController@index');
-});
-
 Route::group(['prefix'=>'admin', 'middleware'=>'admin.login'], function(){
 
-    Route::get('categories', 'PageAdminController@pageCategories');
-    Route::get('gallerys', 'PageAdminController@pageGallerys');
-    Route::get('products', 'PageAdminController@pageProducts');
+    Route::resource('categories', 'CategoryController');
 
-    //Route for ajax:
-    Route::group(['prefix'=>'ajax', 'middleware'=>'admin.login'], function(){
-        Route::resource('admin-categories', 'CategoryController');
-    });
+    // Route::get('categories', 'PageAdminController@pageCategories');
+    // Route::get('gallerys', 'PageAdminController@pageGallerys');
+    // Route::get('products', 'PageAdminController@pageProducts');
+
+    // //Route for ajax:
+    // Route::group(['prefix'=>'ajax', 'middleware'=>'admin.login'], function(){
+    //     Route::resource('admin-categories', 'CategoryController');
+    // });
 });
 

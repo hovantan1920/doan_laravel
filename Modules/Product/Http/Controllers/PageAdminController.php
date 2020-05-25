@@ -88,10 +88,7 @@ class PageAdminController extends Controller
 
     //Page categories in cms
     public function pageCategories(){
-        $name       = "categories";
-        $categories = Category::paginate(10);
-        return view('product::admin.categories',
-        ['profile'=> Auth::user(), 'list'=>$categories, 'name' => $name]);
+        
     }
 
     //Page products in cms

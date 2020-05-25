@@ -5,10 +5,8 @@ namespace Modules\Product\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-
-//Request
-use Modules\Product\Http\Requests\AjaxPostRequestCategory;
-
+//Auth
+use Illuminate\Support\Facades\Auth;
 //Model
 use Modules\Product\Entities\Category;
 
@@ -21,7 +19,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('product::index');
+        $name       = "categories";
+        $categories = Category::paginate(10);
+        return view('product::admin.categories',
+        ['profile'=> Auth::user(), 'list'=>$categories, 'name' => $name]);
     }
 
     /**
@@ -38,52 +39,29 @@ class CategoryController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(AjaxPostRequestCategory $request)
+    public function store(Request $request)
     {
-        $status = false;
-
-        $action   = $request->action;
-        $id       = $request->id;
-        $title    = $request->title;
-        $descride = $request->descride;
-        $image    = $request->image;
-        $active   = $request->active;
-        $parent_id= $request->parent_id;
-
-        $property = $request->property;
-        $value    = $request->value;
-        
-        $category = new Category();
-        $paginate = 10;
-        
-        switch($action){
-            case "insert":
-                $status = $category->myInsert($title, $descride, $image, $active, $parent_id);
-                break;
-            case "update":
-                $status = $category->myUpdate($id, $title, $descride, $image, $active, $parent_id);
-                break; 
-            case "delete":
-                $status    = $category->myDelete($id);
-                break;       
-            case "find-one":
-                return $category->myFindOne($id)->toJson();
-                die();
-                break;  
-            case "get-list":
-                $list = $category->myGetList($paginate);
-                return view('product::admin.ajax.categories-bodylist', ['list'=>$list]);    
-                break; 
-            case "filter-list":
-                $list = $category->myFilter($property, $value, $paginate);
-                return view('product::admin.ajax.categories-bodylist', ['list'=>$list]);    
-                break; 
+        try {
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+                'active' => 'required'
+            ]);
+    
+            $status = false;
+            $data = $request->all();
+            $category = new Category();
+            $category->title = $request->title;
+            $category->image_source = $request->image_source;
+            $category->description = $request->description;
+            $category->active = $request->active;
+            $category->parent_id = $request->parent_id;
+            $status = $category->save();
+            
+            return response()->json(['success' => $status]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'msg' => $th->getMessage()]);
         }
-        
-        if($status) {
-            return response()->json(['success' => 'true']);
-        }
-        return response()->json(['success'=> 'false']);
     }
 
     /**
@@ -93,7 +71,19 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return view('product::show');
+        try {
+            $rs = Category::where('id', $id)->first();
+            return response()->json([
+                'success' => true,
+                'id'=>$id,
+                'result' => $rs
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'msg' => $th->getMessage()
+            ], 200);
+        }
     }
 
     /**
@@ -114,7 +104,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $status = Category::where('id', $id)->update($request->except(['_token']));
+            return response()->json(['success' => $status, 'data'=> $request->all()]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'msg'=> $th->getMessage()]);
+        }
     }
 
     /**
@@ -124,6 +119,11 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $status = Category::where('id', $id)->delete();
+            return response()->json(['success' => $status]);
+        } catch (\Throwable $th) {
+            return response()->json(['success' => false, 'msg'=> $th->getMessage()]);
+        }
     }
 }
