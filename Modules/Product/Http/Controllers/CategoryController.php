@@ -19,19 +19,20 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $name       = "categories";
+        $name       = "Categories";
         $categories = Category::paginate(10);
         return view('product::admin.categories',
         ['profile'=> Auth::user(), 'list'=>$categories, 'name' => $name]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     * @return Response
+     *  Display a listing data
+     * @return View
      */
     public function create()
     {
-        return view('product::create');
+        $categories = Category::paginate(10);
+        return view('product::admin.body.categories', ['list'=>$categories]);
     }
 
     /**
@@ -93,7 +94,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        return view('product::edit');
+        
     }
 
     /**

@@ -5,14 +5,13 @@ namespace Modules\Product\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+
 //Auth
 use Illuminate\Support\Facades\Auth;
 //Model
-use Modules\Product\Entities\Product;
-use Modules\Product\Entities\Category;
 use Modules\Product\Entities\ProductGroup;
 
-class ProductController extends Controller
+class ProductGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,12 +19,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $name       = "products";
-        $data = Product::paginate(10);
-        $categories = Category::all();
-        $groups = ProductGroup::all();
-        return view('product::admin.products',
-        ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name, 'categories'=>$categories, 'groups'=>$groups]);
+        $name       = "groups";
+        $data = ProductGroup::paginate(10);
+        return view('product::admin.groups',
+        ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name]);
     }
 
     /**
@@ -34,8 +31,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $data = Product::paginate(10);
-        return view('product::admin.body.products', ['list'=>$data]);
+        $data = ProductGroup::paginate(10);
+        return view('product::admin.body.groups', ['list'=>$data]);
     }
 
     /**
@@ -48,20 +45,16 @@ class ProductController extends Controller
         try {
             $request->validate([
                 'title' => 'required',
-                'content' => 'required',
-                'category_id' => 'required|exists:categories,id',
-                'group_id' => 'nullable|exists:product_group,id',
+                'description' => 'required',
+                'index' => 'required|integer'
             ]);
     
             $status = false;
             $data = $request->all();
-            $model = new Product();
+            $model = new ProductGroup();
             $model->title = $request->title;
-            $model->content = $request->content;
-            $model->price = $request->price;
-            $model->price_compare = $request->price_compare;
-            $model->category_id = $request->category_id;
-            $model->group_id = $request->group_id;
+            $model->description = $request->description;
+            $model->index = $request->index;
             $status = $model->save();
             
             return response()->json(['success' => $status]);
@@ -78,7 +71,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $rs = Product::where('id', $id)->first();
+            $rs = ProductGroup::where('id', $id)->first();
             return response()->json([
                 'success' => true,
                 'id'=>$id,
@@ -111,7 +104,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $status = Product::where('id', $id)->update($request->except(['_token']));
+            $status = ProductGroup::where('id', $id)->update($request->except(['_token']));
             return response()->json(['success' => $status, 'data'=> $request->all()]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false, 'msg'=> $th->getMessage()]);
@@ -126,7 +119,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
-            $status = Product::where('id', $id)->delete();
+            $status = ProductGroup::where('id', $id)->delete();
             return response()->json(['success' => $status]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false, 'msg'=> $th->getMessage()]);

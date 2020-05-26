@@ -42,8 +42,12 @@
                     <a href="{{url('admin/products')}}">
                         <i class="fas fa-map-marker-alt"></i>Products</a>
                 </li>
+                <li id="menu-groups">
+                    <a href="{{url('admin/groups')}}">
+                        <i class="fas fa-map-marker-alt"></i>Groups</a>
+                </li>
                 <li id="menu-gallerys">
-                    <a href="{{url('admin/gallerys')}}">
+                    <a href="{{url('admin/gallery')}}">
                         <i class="fas fa-map-marker-alt"></i>Products Gallery</a>
                 </li>
             </ul>

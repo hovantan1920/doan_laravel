@@ -14,6 +14,8 @@
 Route::group(['prefix'=>'admin', 'middleware'=>'admin.login'], function(){
 
     Route::resource('categories', 'CategoryController');
+    Route::resource('products', 'ProductController');
+    Route::resource('groups', 'ProductGroupController');
 
     // Route::get('categories', 'PageAdminController@pageCategories');
     // Route::get('gallerys', 'PageAdminController@pageGallerys');

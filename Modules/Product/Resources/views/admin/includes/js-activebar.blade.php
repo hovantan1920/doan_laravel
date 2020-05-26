@@ -13,6 +13,9 @@
         case "products":
             $("#menu-products").addClass("active");
             break;  
+        case "groups":
+            $("#menu-groups").addClass("active");
+            break;  
         case "gallerys":
             $("#menu-gallerys").addClass("active");
             break;    

@@ -1,7 +1,7 @@
 @extends('product::admin.layout.cool-admin')
 
 @section('title-website')
-    Categories
+    GroupProducts
 @endsection
 
 @section('modal')
@@ -26,7 +26,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Item Categorie</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Item GroupProducts</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -51,21 +51,15 @@
             <input type="text" class="form-control" id="input-title" name="title-categorie">
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Image</label>
-            <input type="text" class="form-control" id="input-image">
-          </div>
-          <div class="form-group">
             <div class="form-group">
               <label for="message-text" class="col-form-label">Description</label>
               <textarea class="form-control" id="area-description"></textarea>
             </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Active</label>
-            <input type="number" class="form-control" id="select-active">
+            <label for="recipient-name" class="col-form-label">Index</label>
+            <input type="number" class="form-control" id="input-index">
           </div>
-          <label for="recipient-name" class="col-form-label">ParentID</label>
-          <input type="number" class="form-control" id="select-parent">
           <input type="submit" id="input-id" name="input-id" value="0" hidden>
         </form>
       </div>
@@ -102,7 +96,7 @@
                     </select>
                     <div class="dropDownSelect2"></div>
                 </div>
-                <button class="au-btn-filter" onclick="filter_List()">
+                <button class="au-btn-filter">
                     <i class="zmdi zmdi-filter-list"></i>filters</button>
             </div>
             <div class="table-data__tool-right">
@@ -125,15 +119,13 @@
                     <tr>
                         <th>serial</th>
                         <th>title</th>
-                        <th>descride</th>
-                        <th>active</th>
-                        <th>parent</th>
-                        <th>updated</th>
+                        <th>description</th>
+                        <th>index</th>
                         <th>action</th>
                     </tr>
                 </thead>
                 <tbody id="body-list">
-                    @include('product::admin.body.categories')
+                    @include('product::admin.body.groups')
                 </tbody>
             </table>
         </div>
@@ -158,17 +150,15 @@
 
                 $id       = $("#input-id").val();
                 $title    = $.trim($("#input-title").val());
-                $image_source    = $.trim($("#input-image").val());
-                $parent_id    = $.trim($("#select-parent").val());
-                $active    = $.trim($("#select-active").val());
+                $index    = $.trim($("#input-index").val());
                 $description = $("#area-description").val();
                 $token    = $("input[name = '_token']").val();
 
                 if(validate()){
                     if($("#btn-send").text() == "UPDATE"){
-                        update($id, $title, $image_source, $active, $parent_id, $description, $token);
+                        update($id, $title, $description, $index, $token);
                     }else {
-                        create($title, $image_source, $active, $parent_id, $description, $token);
+                        create($title, $description, $index, $token);
                     }    
                 }
             });
@@ -180,15 +170,13 @@
             });
         });
 
-        function create($title, $image_source, $active, $parent_id, $description, $token){
+        function create($title, $description, $index, $token){
             $.post(
-            "{{route('categories.store').'?page='}}" + page,
+            "{{route('groups.store').'?page='}}" + page,
             {
               _token  : $token, 
               title   : $title,
-              image_source   : $image_source,
-              active  : $active,
-              parent_id: $parent_id,
+              index   : $index,
               description: $description
             },
             function(data, status){
@@ -225,7 +213,7 @@
             getItem($id);
         }
         function getItem($id){
-            var url = "{{route('categories.show', 0)}}" + $id + "?page=" + page; 
+            var url = "{{route('groups.show', 0)}}" + $id + "?page=" + page; 
             $.ajax({
                 url : url,
                 type: 'GET',
@@ -235,9 +223,7 @@
                         try{    
                             $("#input-id").val($data['result']['id']);
                             $("#input-title").val($data['result']['title']);
-                            $("#input-image").val($data['result']['image_source']);
-                            $("#select-active").val($data['result']['active']);
-                            $("#select-parent").val($data['result']['parent_id']);
+                            $("#input-index").val($data['result']['index']);
                             $("#area-description").val($data['result']['description']); 
                         }
                         catch(e){
@@ -254,17 +240,15 @@
             });
         }
 
-        function update($id, $title, $image_source, $active, $parent_id, $description, $token){
-            var url = "{{route('categories.update', 0)}}" + $id; 
+        function update($id, $title, $description, $index, $token){
+            var url = "{{route('groups.update', 0)}}" + $id; 
             $.ajax({
                 url: url,
                 type: 'PUT',
                 data: {
                     _token  : $token, 
                     title   : $title,
-                    image_source   : $image_source,
-                    active  : $active,
-                    parent_id: $parent_id,
+                    index   : $index,
                     description: $description
                 },
                 error: function(error){
@@ -288,7 +272,7 @@
         function remove($id){
             if(confirm("You waint delete it?")){
                 var token = $("input[name = '_token']").val();
-                var url = "{{route('categories.destroy', 0)}}" + $id; 
+                var url = "{{route('groups.destroy', 0)}}" + $id; 
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -313,7 +297,7 @@
 
         function refresh(){
             $.ajax({
-                url: "{{route('categories.create')}}",
+                url: "{{route('groups.create')}}",
                 type: 'GET',
                 error: function (error) {
                     msg = "Error refresh data!";
@@ -325,41 +309,12 @@
             });
         }
 
-        function filter_List(){
-
-            $property  = $("#property").val();
-            $value     = $("#value-property").val();
-
-            $.post(
-              url,
-              {
-                _token  : $("input[name = '_token']").val(), 
-                action  : "filter-list", 
-                id      : 0,
-                title   : "_",
-                descride: "_",
-                property: $property,
-                value   : $value
-              },
-              function (data, status){
-                  if(status == "success"){
-                    $("#body-list").html(data);
-                  }else{
-                    msg = "Error Filter List!";
-                    show_Alert_Warning(msg);
-                  }
-              }  
-            );
-        }
-
         function formInsert(){
             $("#btn-send").text('Add');
             $("#input-id").val(0);
             $("#input-title").val("");
-            $("#input-image").val("");
-            $("#select_active").val(1);
-            $("#select_parent").val(0);
-            $("#area-descride").val("");
+            $("#input-index").val("");
+            $("#area-description").val("");
         }
 
         function validate(){

@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $table = "products";
-    protected $fillable = ['id', 'title', 'content', 'price', 'price_compare', 'category_id'];
+    protected $fillable = ['id', 'title', 'content', 'price', 'price_compare', 'category_id', 'group_id'];
     
     public function category()
     {
         return $this->belongsTo('Modules\Product\Entities\Category');
+    }
+    public function group()
+    {
+        return $this->belongsTo('Modules\Product\Entities\ProductGroup');
     }
     public function gallery()
     {
