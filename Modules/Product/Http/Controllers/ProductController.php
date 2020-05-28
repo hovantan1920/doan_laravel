@@ -28,7 +28,7 @@ class ProductController extends Controller
         ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name, 'categories'=>$categories, 'groups'=>$groups]);
     }
 
-    /**
+    /**1
      *  Display a listing data
      * @return View
      */

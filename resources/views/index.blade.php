@@ -1,10 +1,7 @@
 @extends('layout.main')
 
 @section('content')
-<main class="site-main">
-  
-  <div> 
-    hello
-</div>  
-</main>
+<div>
+  <p>Hello</p>
+</div>
 @endsection

@@ -1,37 +1,52 @@
-<header class="header_area">
-    <div class="main_menu">
-      <nav class="navbar navbar-expand-lg navbar-light" style="font-family: monospace">
-        <div class="container">
-          <a class="navbar-brand logo_h" href="index.html" >
-            <i class="fa fa-coffee" aria-hidden="true"></i> 
-            Coff.ca
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
-            <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
-              <li class="nav-item active"><a class="nav-link" href="{{url('/')}}">Home</a></li>
-              <li class="nav-item">
-                <a href="{{url('product')}}" class="nav-link">Product</a>
-							</li>
-              <li class="nav-item">
-                <a href="{{url('booking')}}" class="nav-link">Booking</a>
-							</li>
-              <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            </ul>
-
-            <ul class="nav-shop">
-              <li class="nav-item"><button><i class="ti-search"></i></button></li>
-              <li class="nav-item"><button><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></button> </li>
-            <li class="nav-item"><button><a href="{{route('cus-login')}}"><i class="ti-user"></i></a></button></li>
-              <li class="nav-item"></li>
-            </ul>
+<nav class="colorlib-nav" role="navigation">
+  <div class="top-menu">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-7 col-md-9">
+          <div id="colorlib-logo"><a href="index.html">Footwear</a></div>
+        </div>
+        <div class="col-sm-5 col-md-3">
+              <form action="#" class="search-wrap">
+                 <div class="form-group">
+                    <input type="search" class="form-control search" placeholder="Search">
+                    <button class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
+                 </div>
+              </form>
+           </div>
+         </div>
+      <div class="row">
+        <div class="col-sm-12 text-left menu-1">
+          <ul>
+          <li class="active"><a href="{{url('/')}}">Home</a></li>
+          @foreach ($categories as $item)
+            <li><a href="{{url('/')}}">{{$item['title']}}</a></li>
+          @endforeach
+            <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sale">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 offset-sm-2 text-center">
+          <div class="row">
+            <div class="owl-carousel2">
+              <div class="item">
+                <div class="col">
+                  <h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3>
+                </div>
+              </div>
+              <div class="item">
+                <div class="col">
+                  <h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </nav>
+      </div>
     </div>
-  </header>
+  </div>
+</nav>

@@ -31,7 +31,7 @@
 
     <!-- Main CSS-->
     <link href="{{asset('css/theme.css')}}" rel="stylesheet" media="all">
-
     <!-- -->
+    {{-- <script src="{{ asset('ckeditor/ckeditor.js') }}"></script> --}}
 
 </head>

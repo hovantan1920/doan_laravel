@@ -19,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $name       = "Categories";
+        $name       = "categories";
         $categories = Category::paginate(10);
         return view('product::admin.categories',
         ['profile'=> Auth::user(), 'list'=>$categories, 'name' => $name]);

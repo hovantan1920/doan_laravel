@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('index');
+Route::group(['prefix' => '/'], function () {
+    Route::get('/', 'Controller@index');
 });
 
 Route::group(['prefix' => 'cus'], function () {
@@ -32,25 +32,25 @@ Route::group(['prefix' => 'cus'], function () {
 });
 
 Route::group(['prefix' => 'admin/account', 'middleware'=>'admin.logout'], function () {
-    Route::get('/', 'AdminAccountController@pageLogin')->name('admin-login');
-    Route::get('forget', 'AdminAccountController@pageForget')->name('admin-forget');
-    Route::get('logout', 'AdminAccountController@logout')->name('admin-logout');
-    Route::get('resetpassword/{myToken?}/{email?}', 'AdminAccountController@pageResetPass');
-    Route::resource('handleadmin', 'AdminAccountController');
+    Route::get('/', 'Admin\AdminAccountController@pageLogin')->name('admin-login');
+    Route::get('forget', 'Admin\AdminAccountController@pageForget')->name('admin-forget');
+    Route::get('logout', 'Admin\AdminAccountController@logout')->name('admin-logout');
+    Route::get('resetpassword/{myToken?}/{email?}', 'Admin\AdminAccountController@pageResetPass');
+    Route::resource('handleadmin', 'Admin\AdminAccountController');
 });
 
 //Router page admin
 Route::group(['prefix'=>'admin', 'middleware'=>'admin.login'], function(){
 
-    Route::get('/', 'AdminController@home')->name('cooladmin');
+    Route::get('/', 'Admin\AdminController@home')->name('cooladmin');
     Route::group(['prefix'=>'user'], function(){
-        Route::get('/', 'AdminController@user');
-        Route::get('roles', 'AdminController@roles');
-        Route::get('permissions', 'AdminController@permissions');
+        Route::get('/', 'Admin\AdminController@user');
+        Route::get('roles', 'Admin\AdminController@roles');
+        Route::get('permissions', 'Admin\AdminController@permissions');
     });
 
     //Route for ajax:
     Route::group(['prefix'=>'ajax', 'middleware'=>'admin.login'], function(){
-        Route::resource('admin-users', 'UserController');
+        Route::resource('admin-users', 'Admin\UserController');
     });
 });

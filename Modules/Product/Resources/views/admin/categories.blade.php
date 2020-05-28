@@ -1,5 +1,4 @@
 @extends('product::admin.layout.cool-admin')
-
 @section('title-website')
     Categories
 @endsection
@@ -48,12 +47,19 @@
           @csrf
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Title</label>
-            <input type="text" class="form-control" id="input-title" name="title-categorie">
-          </div>
+            <input type="text" class="form-control" id="input-title">
+          </div>   
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Image</label>
-            <input type="text" class="form-control" id="input-image">
-          </div>
+            <div class="form-row">
+                <div class="col-md-9">
+                <input type="text" class="form-control" id="input-image" placeholder="Name image..." disabled>
+                </div>
+                <div class="col-md-3">
+                    <button id="choose-image" class="btn btn-primary">Choose</button>
+                </div>
+            </div>  
+          </div> 
           <div class="form-group">
             <div class="form-group">
               <label for="message-text" class="col-form-label">Description</label>
@@ -153,9 +159,27 @@
         var url  = "";
         
         $(document).ready(function(){
+            $("#choose-image").on('click', function(){
+                CKFinder.popup( {
+                    chooseFiles: true,
+                    width: 800,
+                    height: 600,
+                    onInit: function( finder ) {
+                        finder.on( 'files:choose', function( evt ) {
+                            var file = evt.data.files.first();
+                            $("#input-image").val(file.get('name'));
+                        } );
+
+                        finder.on( 'file:choose:resizedImage', function( evt ) {
+                            $("#input-image").val(evt.data.file.get( 'name' ));
+                        } );
+                    }
+                } );
+                return false;
+            });
 
             $("#btn-send").on('click', function(){
-
+                $('.btn').prop('disabled', false);
                 $id       = $("#input-id").val();
                 $title    = $.trim($("#input-title").val());
                 $image_source    = $.trim($("#input-image").val());
@@ -377,6 +401,9 @@
 
     </script>
 
+    @include('ckfinder::setup')
     //This functions repeat!
     <script src="{{asset('js/m-script.js')}}"></script>
+    // <script type="text/javascript" src="/js/ckfinder/ckfinder.js"></script>
+    // <script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script>
 @endsection
