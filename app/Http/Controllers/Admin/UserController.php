@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\AjaxPostRequestUser;
 use App\User;
+use App\Http\Controllers\Controller;
 use App\Roles;
 
 class UserController extends Controller

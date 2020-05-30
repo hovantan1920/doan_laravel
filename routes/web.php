@@ -41,7 +41,6 @@ Route::group(['prefix' => 'admin/account', 'middleware'=>'admin.logout'], functi
 
 //Router page admin
 Route::group(['prefix'=>'admin', 'middleware'=>'admin.login'], function(){
-
     Route::get('/', 'Admin\AdminController@home')->name('cooladmin');
     Route::group(['prefix'=>'user'], function(){
         Route::get('/', 'Admin\AdminController@user');

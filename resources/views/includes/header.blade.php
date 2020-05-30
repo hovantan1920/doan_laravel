@@ -19,7 +19,16 @@
           <ul>
           <li class="active"><a href="{{url('/')}}">Home</a></li>
           @foreach ($categories as $item)
-            <li><a href="{{url('/')}}">{{$item['title']}}</a></li>
+            <li class="has-dropdown">
+              <a href="{{url('/')}}">{{$item['title']}}</a>
+              @if (count($item['children']) != 0)
+                <ul class="dropdown">
+                  @foreach ($item['children'] as $sub)
+                    <li><a href="product-detail.html">{{$sub['title']}}</a></li>
+                  @endforeach
+                </ul>
+              @endif
+            </li>
           @endforeach
             <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
           </ul>

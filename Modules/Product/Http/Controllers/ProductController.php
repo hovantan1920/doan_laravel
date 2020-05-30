@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
         $name       = "products";
         $data = Product::paginate(10);
-        $categories = Category::all();
+        $categories = Category::where('parent_id', '>', 0)->get();
         $groups = ProductGroup::all();
         return view('product::admin.products',
         ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name, 'categories'=>$categories, 'groups'=>$groups]);
@@ -35,7 +35,9 @@ class ProductController extends Controller
     public function create()
     {
         $data = Product::paginate(10);
-        return view('product::admin.body.products', ['list'=>$data]);
+        $categories = Category::where('parent_id', '>', 0)->get();
+        $groups = ProductGroup::all();
+        return view('product::admin.body.products', ['list'=>$data, 'categories'=>$categories, 'groups'=>$groups]);
     }
 
     /**

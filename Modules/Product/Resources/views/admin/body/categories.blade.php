@@ -10,7 +10,13 @@
         <td>{{$cate['title']}}</td>
         <td class="text-right">{{$cate['description']}}</td>
         <td class="text-right">{{$cate['active']}}</td>
-        <td class="text-right">{{$cate['parent_id']}}</td>
+        <td class="text-right"> 
+            @foreach ($parents as $parent)
+                @if ($parent['id'] == $cate['parent_id'])
+                    {{$parent['title']}}
+                @endif    
+            @endforeach
+        </td>
         <td class="text-right">{{$cate['updated_at']}}</td>
         <td>
             <div class="table-data-feature">

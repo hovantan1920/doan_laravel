@@ -18,7 +18,7 @@ class CreateCategoryTable extends Migration
             $table->string('title', '150');
             $table->string('image_source')->nullable();
             $table->integer('active')->default(1);
-            $table->integer('parent_id')->default(0);
+            $table->integer('parent_id')->nullable()->default(0);
             $table->string('description')->nullable();
             $table->timestamps();
         });

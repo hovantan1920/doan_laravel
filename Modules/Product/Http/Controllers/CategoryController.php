@@ -21,8 +21,9 @@ class CategoryController extends Controller
     {
         $name       = "categories";
         $categories = Category::paginate(10);
+        $parents = Category::where('parent_id', null)->get();
         return view('product::admin.categories',
-        ['profile'=> Auth::user(), 'list'=>$categories, 'name' => $name]);
+        ['profile'=> Auth::user(), 'list'=>$categories, 'parents'=>$parents, 'name' => $name]);
     }
 
     /**
@@ -32,7 +33,8 @@ class CategoryController extends Controller
     public function create()
     {
         $categories = Category::paginate(10);
-        return view('product::admin.body.categories', ['list'=>$categories]);
+        $parents = Category::where('parent_id', null)->get();
+        return view('product::admin.body.categories', ['list'=>$categories, 'parents'=>$parents]);
     }
 
     /**

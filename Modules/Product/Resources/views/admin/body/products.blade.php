@@ -10,8 +10,20 @@
         <td>{{$cate['title']}}</td>
         <td class="text-right">{{$cate['price']}}</td>
         <td class="text-right">{{$cate['price_compare']}}</td>
-        <td class="text-right">{{$cate['category_id']}}</td>
-        <td class="text-right">{{$cate['group_id']}}</td>
+        <td class="text-right"> 
+            @foreach ($categories as $category)
+                @if ($category['id'] == $cate['category_id'])
+                    {{$category['title']}}
+                @endif    
+            @endforeach
+        </td>
+        <td class="text-right"> 
+            @foreach ($groups as $item)
+                @if ($item['id'] == $cate['group_id'])
+                    {{$item['title']}}
+                @endif    
+            @endforeach
+        </td>
         <td class="text-right">{{$cate['updated_at']}}</td>
         <td>
             <div class="table-data-feature">

@@ -70,8 +70,14 @@
             <label for="recipient-name" class="col-form-label">Active</label>
             <input type="number" class="form-control" id="select-active">
           </div>
-          <label for="recipient-name" class="col-form-label">ParentID</label>
-          <input type="number" class="form-control" id="select-parent">
+          <div class="form-group">
+            <label>Parent</label>
+            <select class="form-control" id="select-parent">
+                @foreach ($parents as $item)
+                    <option value="{{$item['id']}}">{{$item['title']}}</option>
+                @endforeach
+            </select>
+          </div>
           <input type="submit" id="input-id" name="input-id" value="0" hidden>
         </form>
       </div>
