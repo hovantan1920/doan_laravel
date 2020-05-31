@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-7 col-md-9">
-          <div id="colorlib-logo"><a href="index.html">Footwear</a></div>
+          <div id="colorlib-logo"><a href="{{url('/')}}">Fashion</a></div>
         </div>
         <div class="col-sm-5 col-md-3">
               <form action="#" class="search-wrap">
@@ -20,17 +20,17 @@
           <li class="active"><a href="{{url('/')}}">Home</a></li>
           @foreach ($categories as $item)
             <li class="has-dropdown">
-              <a href="{{url('/')}}">{{$item['title']}}</a>
+              <a>{{$item['title']}}</a>
               @if (count($item['children']) != 0)
                 <ul class="dropdown">
                   @foreach ($item['children'] as $sub)
-                    <li><a href="product-detail.html">{{$sub['title']}}</a></li>
+                    <li><a href="{{url("category/$sub[id]")}}">{{$sub['title']}}</a></li>
                   @endforeach
                 </ul>
               @endif
             </li>
           @endforeach
-            <li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
+            <li class="cart"><a href="{{url('cart')}}"><i class="icon-shopping-cart"></i> Cart [<span id="span-cart">0</span>]</a></li>
           </ul>
         </div>
       </div>

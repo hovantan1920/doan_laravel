@@ -13,7 +13,16 @@
 
 Route::group(['prefix' => '/'], function () {
     Route::get('/', 'Controller@index');
+    Route::get('/category/{id}', 'Controller@category');
+    Route::get('/detail/{id}', 'Controller@detail');
+    Route::group(['prefix' => '/cart'], function () {
+        Route::get('/', 'Controller@cart');
+        Route::get('products', 'Controller@cartProducts');
+        Route::get('price-total', 'Controller@cartPriceTotal');
+        Route::get('related', 'Controller@cartRelated');
+    });
 });
+
 
 Route::group(['prefix' => 'cus'], function () {
     Route::get('/', 'CustomerAccountController@pageLogin')  

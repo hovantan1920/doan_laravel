@@ -10,3 +10,4 @@
 <script src="{{asset('js/bootstrap-datepicker.js')}}"></script>
 <script src="{{asset('js/jquery.stellar.min.js')}}"></script>
 <script src="{{asset('js/main-home.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>

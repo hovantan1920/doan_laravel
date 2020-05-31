@@ -78,12 +78,13 @@
           @foreach ($bestSellers as $item)
             <div class="col-lg-3 mb-4 text-center">
               <div class="product-entry border">
-                <a href="#" class="prod-img">
+                <a href="{{url("detail/$item[id]")}}" class="prod-img">
                   <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
                 </a>
                 <div class="desc">
-                  <h2><a href="#">{{$item['title']}}</a></h2>
+                  <h2><a href="{{url("detail/$item[id]")}}">{{$item['title']}}</a></h2>
                   <span class="price">${{$item['price']}}</span>
+                  <button onclick="addToCart({{$item['id']}}, 1)" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i></button>
                 </div>
               </div>
             </div>
@@ -102,12 +103,13 @@
           @foreach ($newProducts as $item)
             <div class="col-lg-3 mb-4 text-center">
               <div class="product-entry border">
-                <a href="#" class="prod-img">
+                <a href="{{url("detail/$item[id]")}}" class="prod-img">
                   <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
                 </a>
                 <div class="desc">
-                  <h2><a href="#">{{$item['title']}}</a></h2>
+                  <h2><a href="{{url("detail/$item[id]")}}">{{$item['title']}}</a></h2>
                   <span class="price">${{$item['price']}}</span>
+                  <button onclick="addToCart({{$item['id']}}, 1)" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i></button>
                 </div>
               </div>
             </div>
