@@ -10,7 +10,7 @@ return [
         ],
         'new'=>[
             'id'=>2,
-            'title'=>'New Products'
+            'name'=>'New Products'
         ]
     ]
 ];

@@ -173,11 +173,11 @@
                     onInit: function( finder ) {
                         finder.on( 'files:choose', function( evt ) {
                             var file = evt.data.files.first();
-                            $("#input-image").val(file.get('name'));
+                            $("#input-image").val(file.getUrl());
                         } );
 
                         finder.on( 'file:choose:resizedImage', function( evt ) {
-                            $("#input-image").val(evt.data.file.get( 'name' ));
+                            $("#input-image").val(evt.data.file.getUrl());
                         } );
                     }
                 } );
