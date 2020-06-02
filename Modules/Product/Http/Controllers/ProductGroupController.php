@@ -21,7 +21,7 @@ class ProductGroupController extends Controller
     {
         $name       = "groups";
         $data = ProductGroup::paginate(10);
-        return view('product::admin.groups',
+        return view('product::groups',
         ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name]);
     }
 
@@ -32,7 +32,7 @@ class ProductGroupController extends Controller
     public function create()
     {
         $data = ProductGroup::paginate(10);
-        return view('product::admin.body.groups', ['list'=>$data]);
+        return view('product::body.groups', ['list'=>$data]);
     }
 
     /**

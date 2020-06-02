@@ -13,7 +13,7 @@ class CreateProductGroupTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_group', function (Blueprint $table) {
+        Schema::create('product_groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
             $table->string('description');
@@ -29,6 +29,6 @@ class CreateProductGroupTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_group');
+        Schema::dropIfExists('product_groups');
     }
 }

@@ -24,7 +24,7 @@ class ProductController extends Controller
         $data = Product::paginate(10);
         $categories = Category::where('parent_id', '>', 0)->get();
         $groups = ProductGroup::all();
-        return view('product::admin.products',
+        return view('product::products',
         ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name, 'categories'=>$categories, 'groups'=>$groups]);
     }
 
@@ -37,7 +37,7 @@ class ProductController extends Controller
         $data = Product::paginate(10);
         $categories = Category::where('parent_id', '>', 0)->get();
         $groups = ProductGroup::all();
-        return view('product::admin.body.products', ['list'=>$data, 'categories'=>$categories, 'groups'=>$groups]);
+        return view('product::body.products', ['list'=>$data, 'categories'=>$categories, 'groups'=>$groups]);
     }
 
     /**

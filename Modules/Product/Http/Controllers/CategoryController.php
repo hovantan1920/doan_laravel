@@ -22,7 +22,7 @@ class CategoryController extends Controller
         $name       = "categories";
         $categories = Category::paginate(10);
         $parents = Category::where('parent_id', null)->get();
-        return view('product::admin.categories',
+        return view('product::categories',
         ['profile'=> Auth::user(), 'list'=>$categories, 'parents'=>$parents, 'name' => $name]);
     }
 
@@ -34,7 +34,7 @@ class CategoryController extends Controller
     {
         $categories = Category::paginate(10);
         $parents = Category::where('parent_id', null)->get();
-        return view('product::admin.body.categories', ['list'=>$categories, 'parents'=>$parents]);
+        return view('product::body.categories', ['list'=>$categories, 'parents'=>$parents]);
     }
 
     /**

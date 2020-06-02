@@ -1,8 +1,16 @@
 <?php
+
 return [
-    'limit-show'=>12,
-    'group-product'=>[
-        'best-sellers'=>1,
-        'new-products'=>2
+    'related'=>10,
+    'limit'=>12,
+    'groups'=>[
+        'seller'=>[
+            'id'=>1,
+            'name'=>'Best Sellers'
+        ],
+        'new'=>[
+            'id'=>2,
+            'title'=>'New Products'
+        ]
     ]
 ];

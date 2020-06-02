@@ -42,9 +42,25 @@
                     <a href="{{url('admin/products')}}">
                         <i class="fas fa-map-marker-alt"></i>Products</a>
                 </li>
-                <li id="menu-gallerys">
-                    <a href="{{url('admin/gallerys')}}">
-                        <i class="fas fa-map-marker-alt"></i>Products Gallery</a>
+                <li id="menu-groups">
+                    <a href="{{url('admin/groups')}}">
+                        <i class="fas fa-map-marker-alt"></i>Groups</a>
+                </li>
+                <li class="has-sub" id="menu-theme">
+                    <a class="js-arrow" href="#">
+                        <i class="fas fa-paint-brush"></i>Theme
+                    </a>
+                    <ul class="list-unstyled navbar__sub-list js-sub-list">
+                        <li>
+                            <a href="{{url('admin/user')}}"><i class="fas fa-user"></i>User</a>
+                        </li>
+                        <li>
+                            <a href="{{url('admin/user/roles')}}"><i class="fas fa-street-view"></i>Role</a>
+                        </li>
+                        <li>
+                            <a href="{{url('admin/user/permissions')}}"><i class="fas fa-lock "></i>Permission</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

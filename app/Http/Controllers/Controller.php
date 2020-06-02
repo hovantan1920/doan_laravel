@@ -23,8 +23,8 @@ class Controller extends BaseController
     public function index(){
         Category::fixTree();
         $categories = Category::get()->toTree();
-        $bestSellers = Product::where('group_id', Config('product.group-product.best-sellers'))->limit(Config('product.group-product.limit-show'))->get();
-        $newProducts = Product::where('group_id', Config('product.group-product.new-products'))->limit(Config('product.group-product.limit-show'))->get();
+        $bestSellers = Product::where('group_id', Config('product.groups.seller.id'))->limit(Config('product.limit'))->get();
+        $newProducts = Product::where('group_id', Config('product.groups.new.id'))->limit(Config('product.limit'))->get();
         // return response()->json([
         //     'best'=>$bestSellers,
         //     'se'=>Config('product.group-product.best-sellers'),
@@ -52,7 +52,7 @@ class Controller extends BaseController
         $siblings = $category->siblings()->get();
         $parent = Category::ancestorsOf($id)->first();
         $products = Product::where('category_id', $id)
-            ->limit(Config('product.group-product.limit-show'))->get();
+            ->limit(Config('product.limit'))->get();
         // return response()->json([
         //     'id'=>$id,
         //     'sib'=>$siblings,
@@ -126,7 +126,7 @@ class Controller extends BaseController
         foreach ($request->products as $id) {
             array_push($categories, Product::find($id)->category_id);
         }
-        $products = Product::whereIn('category_id', $categories)->inRandomOrder()->limit(Config('product.group-product.limit-related'))->get();
+        $products = Product::whereIn('category_id', $categories)->inRandomOrder()->limit(Config('product.related'))->get();
         return response()->view('contents.cart-related', [
             'products'=>$products
         ]);;

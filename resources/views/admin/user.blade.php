@@ -56,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody id="body-list">
-                    @include('admin.ajax.user-bodylist')
+                    @include('admin.body.users')
                 </tbody>
             </table>
         </div>
