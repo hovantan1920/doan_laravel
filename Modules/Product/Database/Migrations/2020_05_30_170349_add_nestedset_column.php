@@ -27,7 +27,8 @@ class AddNestedsetColumn extends Migration
     public function down()
     {
         Schema::table('categories', function (Blueprint $table) {
-
+            $table->dropColumn('_lft');
+            $table->dropColumn('_rgt');
         });
     }
 }

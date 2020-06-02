@@ -24,21 +24,21 @@ Route::group(['prefix' => '/'], function () {
 });
 
 
-Route::group(['prefix' => 'cus'], function () {
-    Route::get('/', 'CustomerAccountController@pageLogin')  
-        ->name('cus-login')->middleware('cus.logout');
-    Route::get('register', 'CustomerAccountController@pageRegister')
-        ->name('cus-register')->middleware('cus.logout');
-    Route::get('profile', 'CustomerAccountController@pageProfile')
-        ->name('cus-profile')->middleware('cus.login');
+// Route::group(['prefix' => 'cus'], function () {
+//     Route::get('/', 'CustomerAccountController@pageLogin')  
+//         ->name('cus-login')->middleware('cus.logout');
+//     Route::get('register', 'CustomerAccountController@pageRegister')
+//         ->name('cus-register')->middleware('cus.logout');
+//     Route::get('profile', 'CustomerAccountController@pageProfile')
+//         ->name('cus-profile')->middleware('cus.login');
 
-    Route::get('logout', 'CustomerAccountController@logoutAccount')->name('cus-logout');
+//     Route::get('logout', 'CustomerAccountController@logoutAccount')->name('cus-logout');
 
-    Route::resource('cus-handle', 'CustomerAccountController');
-    Route::get('confirm/{mytoken?}/{id?}', 'CustomerAccountController@confirmEmail');
-    Route::get('sendMail', 'CustomerAccountController@sendMailReset');
-    Route::get('resetPass/{myToken?}/{email?}', 'CustomerAccountController@resetPassword');
-});
+//     Route::resource('cus-handle', 'CustomerAccountController');
+//     Route::get('confirm/{mytoken?}/{id?}', 'CustomerAccountController@confirmEmail');
+//     Route::get('sendMail', 'CustomerAccountController@sendMailReset');
+//     Route::get('resetPass/{myToken?}/{email?}', 'CustomerAccountController@resetPassword');
+// });
 
 Route::group(['prefix' => 'admin/account', 'middleware'=>'admin.logout'], function () {
     Route::get('/', 'Admin\AdminAccountController@pageLogin')->name('admin-login');

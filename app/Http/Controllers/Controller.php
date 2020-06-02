@@ -59,7 +59,7 @@ class Controller extends BaseController
         //     'parent'=>$parent,
         //     'cate'=>$category
         // ]);
-        return View('lib-by-category', 
+        return View('bycategory', 
             [
                 'categories'=>$categories, 
                 'category'=>$category,
@@ -79,7 +79,7 @@ class Controller extends BaseController
         //     'val'=>$value
         // ]);
         
-        return response()->view('detail-product', [
+        return response()->view('detail', [
             'categories'=>$categories, 
             'product'=>$product,
         ]);;
@@ -88,7 +88,7 @@ class Controller extends BaseController
     public function cart(){
         Category::fixTree();
         $categories = Category::get()->toTree();
-        return response()->view('cart-product', [
+        return response()->view('cart', [
             'categories'=>$categories, 
         ]);;
     }

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
     @include('includes.manifest')
-    <body>
+    <body style="background-color: white">
         <div>
             @include('includes.header')
             @yield('content')

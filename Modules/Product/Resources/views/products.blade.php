@@ -23,7 +23,7 @@
     <strong>Warning!</strong> <span id="warning-msg"></span><i class="fa fa-times ml-3 btn-close-alert" aria-hidden="true" id=""></i>
 </div>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Add Item Product</h5>
@@ -31,7 +31,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body m-2 p-4">
         <div id="div-warring" class="bg-danger pl-5 py-2 text-white d-none">
             <ul>
             <li>The title field is require.</li>
@@ -50,6 +50,33 @@
             <label for="recipient-name" class="col-form-label">Title</label>
             <input type="text" class="form-control" id="input-title" name="title-categorie">
           </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Images</label>
+            <div class="form-row">
+                <div class="col-md-10">
+                <input type="text" class="form-control" id="input-image" placeholder="Name image..." disabled>
+                </div>
+                <div class="col-md-2 text-center">
+                    <button id="choose-image" class="btn btn-primary">Choose</button>
+                </div>
+            </div>  
+            <div>
+                <div id="previews" class="@isset($product->gallery) @if(!empty($product->gallery)) bg-light @endif @endisset">
+                    {{-- @isset($product->gallery)
+                        @if(!empty($product->gallery))
+                            @foreach(\Modules\Product\Entities\GalleryProduct::where('product_id', $product->id)->get() as $file)
+                                <div class="gallery imgprev-wrap imgprev-wrap-gallery" style="display:block">
+                                    <input type="hidden" name="images[]" value="{{ $file->image }}">
+                                    <img class="img-preview" src="{{ asset($file->image) }}" alt="">
+                                    <i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>
+                                </div>
+                            @endforeach
+                        @endif
+                    @endisset --}}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+          </div> 
           <div class="form-group">
             <div class="form-group">
               <label for="message-text" class="col-form-label">Content</label>
@@ -165,8 +192,51 @@
         var page = 
         <?php $page = 1; if(isset($_GET['page'])) $page = $_GET['page']; echo $page; ?>; 
         var url  = "";
+        var images = [];
         
         $(document).ready(function(){
+
+            $("#choose-image").on('click', function(){
+                // CKFinder.popup( {
+                //     chooseFiles: true,
+                //     width: 800,
+                //     height: 600,
+                //     onInit: function( finder ) {
+                //         finder.on( 'files:choose', function( evt ) {
+                //             var file = evt.data.files.first();
+                //             $("#input-image").val(file.getUrl());
+                //         } );
+
+                //         finder.on( 'file:choose:resizedImage', function( evt ) {
+                //             $("#input-image").val(evt.data.file.getUrl());
+                //         } );
+                //     }
+                // } );
+                CKFinder.modal( {
+                    chooseFiles: true,
+                    width: 800,
+                    height: 600,
+                    onInit: function( finder ) {
+                        finder.on( 'files:choose', function( evt ) {
+                            console.log(evt.data.files);
+                            var files = evt.data.files;
+                            var file = evt.data.files.first();
+                            var html = '';
+                            $("#input-image").val(file.getUrl());
+                            $("#previews").addClass("bg-light");
+                            files.forEach( function( file, i ) {
+                                html += '<div class="m-2 float-left" style="display:block">'
+                                        +'<input type="hidden" name="images[]" class="form-control input-sm" readonly value="'+file.getUrl()+'" />'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+file.getUrl()+'"/>'
+                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
+                                    + '</div>';
+                            } );
+                            $("#previews").html(html);
+                        } );
+                    }
+                } );
+                return false;
+            });
 
             $("#btn-send").on('click', function(){
 
@@ -369,6 +439,9 @@
 
     </script>
 
+    @include('ckfinder::setup')
+    <script type="text/javascript" src="/js/ckfinder/ckfinder.js"></script>
+    <script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script>
     //This functions repeat!
     <script src="{{asset('js/m-script.js')}}"></script>
 @endsection

@@ -22,7 +22,7 @@
     <strong>Warning!</strong> <span id="warning-msg"></span><i class="fa fa-times ml-3 btn-close-alert" aria-hidden="true" id=""></i>
 </div>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Add Item Categorie</h5>
@@ -30,7 +30,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body  p-4 m-2">
         <div id="div-warring" class="bg-danger pl-5 py-2 text-white d-none">
             <ul>
             <li>The title field is require.</li>
@@ -52,10 +52,10 @@
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Image</label>
             <div class="form-row">
-                <div class="col-md-9">
+                <div class="col-md-10">
                 <input type="text" class="form-control" id="input-image" placeholder="Name image..." disabled>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2 text-center">
                     <button id="choose-image" class="btn btn-primary">Choose</button>
                 </div>
             </div>  
@@ -73,6 +73,7 @@
           <div class="form-group">
             <label>Parent</label>
             <select class="form-control" id="select-parent">
+                <option value="0">---Is parrent---</option>
                 @foreach ($parents as $item)
                     <option value="{{$item['id']}}">{{$item['title']}}</option>
                 @endforeach
@@ -406,10 +407,9 @@
         }
 
     </script>
-
     @include('ckfinder::setup')
+    <script type="text/javascript" src="/js/ckfinder/ckfinder.js"></script>
+    <script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script>
     //This functions repeat!
     <script src="{{asset('js/m-script.js')}}"></script>
-    // <script type="text/javascript" src="/js/ckfinder/ckfinder.js"></script>
-    // <script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script>
 @endsection

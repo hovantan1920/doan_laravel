@@ -8,11 +8,10 @@
     <tr class="tr-shadow">
         <td>{{$i}}</td>
         <td>{{$cate['title']}}</td>
-        <td class="text-right">{{$cate['description']}}</td>
+        <td class="text-center">{{$cate['description']}}</td>
         <td class="text-right">{{$cate['index']}}</td>
-        <td class="text-right">{{$cate['updated_at']}}</td>
         <td>
-            <div class="table-data-feature">
+            <div class="table-data-feature ">
             <button class="item" title="Edit" data-toggle="modal" data-target="#modal" id="btn-edit" 
             onclick="showDialogUpdate({{$cate['id']}})">
                     <i class="zmdi zmdi-edit"></i>

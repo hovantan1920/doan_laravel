@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <p class="bread"><span><a href="index.html">Home</a></span> / <span>Shopping Cart</span></p>
+                    <p class="bread"><span><a href="{{url('/')}}">Home</a></span> / <span>Shopping Cart</span></p>
                 </div>
             </div>
         </div>

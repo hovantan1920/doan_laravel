@@ -46,6 +46,7 @@
                     <a href="{{url('admin/groups')}}">
                         <i class="fas fa-map-marker-alt"></i>Groups</a>
                 </li>
+                <hr>
                 <li class="has-sub" id="menu-theme">
                     <a class="js-arrow" href="#">
                         <i class="fas fa-paint-brush"></i>Theme

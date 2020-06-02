@@ -52,7 +52,7 @@ class ProductController extends Controller
                 'title' => 'required',
                 'content' => 'required',
                 'category_id' => 'required|exists:categories,id',
-                'group_id' => 'nullable|exists:product_group,id',
+                'group_id' => 'nullable|exists:product_groups,id',
             ]);
     
             $status = false;

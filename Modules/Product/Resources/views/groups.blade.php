@@ -120,8 +120,8 @@
                         <th>serial</th>
                         <th>title</th>
                         <th>description</th>
-                        <th>index</th>
-                        <th>action</th>
+                        <th class="text-right">index</th>
+                        <th class="text-center">action</th>
                     </tr>
                 </thead>
                 <tbody id="body-list">
