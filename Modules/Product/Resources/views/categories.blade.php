@@ -58,6 +58,11 @@
                 <div class="col-md-2 text-center">
                     <button id="choose-image" class="btn btn-primary">Choose</button>
                 </div>
+            </div>
+            <div>
+                <div id="preview">
+                </div>
+                <div class="clearfix"></div>
             </div>  
           </div> 
           <div class="form-group">
@@ -175,6 +180,10 @@
                         finder.on( 'files:choose', function( evt ) {
                             var file = evt.data.files.first();
                             $("#input-image").val(file.getUrl());
+                            var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+file.getUrl()+'"/>'
+                                    + '</div>';
+                            $("#preview").html(html);
                         } );
 
                         finder.on( 'file:choose:resizedImage', function( evt ) {
@@ -270,6 +279,12 @@
                             $("#select-active").val($data['result']['active']);
                             $("#select-parent").val($data['result']['parent_id']);
                             $("#area-description").val($data['result']['description']); 
+                            if($data['result']['image_source'] != null){
+                                var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+$data['result']['image_source']+'"/>'
+                                    + '</div>';
+                                $("#preview").html(html);
+                            }
                         }
                         catch(e){
                             console.log(e);
@@ -391,6 +406,7 @@
             $("#select_active").val(1);
             $("#select_parent").val(0);
             $("#area-descride").val("");
+            $("#preview").html('');
         }
 
         function validate(){

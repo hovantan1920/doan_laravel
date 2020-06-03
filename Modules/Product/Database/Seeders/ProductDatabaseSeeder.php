@@ -38,12 +38,12 @@ class ProductDatabaseSeeder extends Seeder
 
         $categories = [[
             'title'=> 'Men - clothes',
-            'image_source' =>'storage/images/cover_category.jpg',
+            'image_source' =>'/storage/images/cover_category.jpg',
             'active'=>1,
             'description'=>'Men clothes'
         ],[
             'title'=> 'Women - clothes',
-            'image_source' =>'storage/images/cover_category.jpg',
+            'image_source' =>'/storage/images/cover_category.jpg',
             'active'=>1,
             'description'=>'Women clothes'
         ]

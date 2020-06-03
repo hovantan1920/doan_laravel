@@ -15,6 +15,8 @@
 5. Chạy lênh: <b>php artisan migrate</b> - để khởi tạo database ban đầu
 6. Chạy lệnh: <b>php artisan storage:link</b> - để tạo <b>symbolic link</b> đến từ folder <i>storage/app/public</i> đến folder <i>public/storage</i>
 7. Chạy lệnh: <b>php artisan db:seed</b> - để khởi tạo tải khoản và dữ liệu demo
+8. Run command: <b>php artisan ckfinder:download</b> - Download ckfinder(Tool support for upload image)
+<!-- 8. Run command <b> php artisan passport:client --personal</b> Create key passport api -->
 
 ## Về dự án:
 - Sử dụng bản Laravel 5.5

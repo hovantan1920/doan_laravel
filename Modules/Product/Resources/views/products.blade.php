@@ -222,7 +222,6 @@
                             $("#input-image").val(file.getUrl());
                             var html = '<div class="m-2 float-left" style="display:block">'
                                         + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+file.getUrl()+'"/>'
-                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
                                     + '</div>';
                             $("#preview").html(html);
                         } );
@@ -231,7 +230,6 @@
                             $("#input-image").val(evt.data.file.getUrl());
                             var html = '<div class="m-2 float-left" style="display:block">'
                                         + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+evt.data.file.getUrl()+'"/>'
-                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
                                     + '</div>';
                             $("#preview").html(html);
                         } );
@@ -249,13 +247,12 @@
                             console.log(evt.data.files);
                             var files = evt.data.files;
                             var html = '';
-                            $("#input-gallery").val("Choosed: " + files.length);
+                            $("#input-gallery").val("Choosed: " + files.length + " file");
                             $("#previews").addClass("bg-light");
                             files.forEach( function( file, i ) {
                                 gallery.push(file.getUrl());
-                                html += '<div class="m-2 float-left" style="display:block">'
+                                html += '<div class="m-1 float-left" style="display:block">'
                                         + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+file.getUrl()+'"/>'
-                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
                                     + '</div>';
                             } );
                             $("#previews").html(html);
@@ -363,11 +360,12 @@
                             $("#select-category_id").val($data['result']['category_id']);
                             $("#select-group_id").val($data['result']['group_id']);
                             $("#area-content").val($data['result']['content']); 
-                            var html = '<div class="m-2 float-left" style="display:block">'
+                            if($data['result']['image_source'] != null){
+                                var html = '<div class="m-2 float-left" style="display:block">'
                                         + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+$data['result']['image_source']+'"/>'
-                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
-                                    + '</div>';
-                            $("#preview").html(html);
+                                        + '</div>';
+                                $("#preview").html(html);
+                            }
                             $("#input-gallery").val("Choosed: " + $data['gallery'].length);
                         }
                         catch(e){
@@ -475,6 +473,7 @@
             $("#input-image").val("");
             $("#select_active").val(1);
             $("#select_parent").val(0);
+            $("#preview").html('');
             $("#area-descride").val("");
         }
 
