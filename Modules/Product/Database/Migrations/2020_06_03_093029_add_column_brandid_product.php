@@ -15,7 +15,7 @@ class AddColumnBrandidProduct extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->integer('brand_id')->unsigned();
-            $table->foreign('brand_id')->references('id')->on('product_groups');
+            $table->foreign('brand_id')->references('id')->on('brands');
         });
     }
 
