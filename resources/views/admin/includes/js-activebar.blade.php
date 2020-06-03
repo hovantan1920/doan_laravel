@@ -4,6 +4,9 @@
         case "users":
             $("#menu-users").addClass("active");
             break;
+        case "themes":
+            $("#menu-themes").addClass("active");
+            break;
         case "bookings":
             $("#menu-bookings").addClass("active");
             break;

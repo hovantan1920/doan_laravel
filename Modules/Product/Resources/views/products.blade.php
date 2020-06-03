@@ -78,17 +78,6 @@
             </div>  
             <div>
                 <div id="previews">
-                    {{-- @isset($product->gallery)
-                        @if(!empty($product->gallery))
-                            @foreach(\Modules\Product\Entities\GalleryProduct::where('product_id', $product->id)->get() as $file)
-                                <div class="gallery imgprev-wrap imgprev-wrap-gallery" style="display:block">
-                                    <input type="hidden" name="images[]" value="{{ $file->image }}">
-                                    <img class="img-preview" src="{{ asset($file->image) }}" alt="">
-                                    <i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>
-                                </div>
-                            @endforeach
-                        @endif
-                    @endisset --}}
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -118,6 +107,14 @@
             <select class="form-control" id="select-group_id">
               <option selected>---------</option>
               @foreach ($groups as $item)
+                <option value="{{$item['id']}}">{{$item['title']}}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="sel1">From brand:</label>
+            <select class="form-control" id="select-brand_id">
+              @foreach ($brands as $item)
                 <option value="{{$item['id']}}">{{$item['title']}}</option>
               @endforeach
             </select>
@@ -179,7 +176,7 @@
             <table class="table table-data2">
                 <thead>
                     <tr>
-                        <th>serial</th>
+                        <th>image</th>
                         <th>title</th>
                         <th>price</th>
                         <th>price compare</th>
@@ -271,14 +268,15 @@
                 $price_compare    = $.trim($("#input-price_compare").val());
                 $category_id    = $.trim($("#select-category_id").val());
                 $group_id    = $.trim($("#select-group_id").val());
+                $brand_id    = $.trim($("#select-brand_id").val());
                 $content = $("#area-content").val();
                 $token    = $("input[name = '_token']").val();
 
                 if(validate()){
                     if($("#btn-send").text() == "UPDATE"){
-                        update($id, $title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token);
+                        update($id, $title, $image_souce, $price, $price_compare,$brand_id, $category_id, $group_id, $content, $token);
                     }else {
-                        create($title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token);
+                        create($title, $image_souce, $price, $price_compare,$brand_id, $category_id, $group_id, $content, $token);
                     }    
                 }
             });
@@ -294,7 +292,7 @@
             console.log(object);
         }
 
-        function create($title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token){
+        function create($title, $image_souce, $price, $price_compare, $brand_id, $category_id, $group_id, $content, $token){
             $.post(
             "{{route('products.store').'?page='}}" + page,
             {
@@ -303,6 +301,7 @@
               price   : $price,
               image_source : $image_souce,
               gallery : gallery,
+              brand_id:$brand_id,
               price_compare  : $price_compare,
               category_id: $category_id,
               content: $content,
@@ -359,6 +358,7 @@
                             $("#input-price_compare").val($data['result']['price_compare']);
                             $("#select-category_id").val($data['result']['category_id']);
                             $("#select-group_id").val($data['result']['group_id']);
+                            $("#select-brand_id").val($data['result']['brand_id']);
                             $("#area-content").val($data['result']['content']); 
                             if($data['result']['image_source'] != null){
                                 var html = '<div class="m-2 float-left" style="display:block">'
@@ -382,7 +382,7 @@
             });
         }
 
-        function update($id, $title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token){
+        function update($id, $title, $image_souce, $price, $price_compare, $brand_id, $category_id, $group_id, $content, $token){
             var url = "{{route('products.update', 0)}}" + $id; 
             $.ajax({
                 url: url,
@@ -393,6 +393,7 @@
                     price   : $price,
                     image_source : $image_souce,
                     gallery : gallery,
+                    brand_id: $brand_id,
                     price_compare  : $price_compare,
                     category_id: $category_id,
                     content: $content,
@@ -474,6 +475,7 @@
             $("#input-gallery").val("");
             $("#preview").html('');
             $("#area-content").val("");
+            $("#input-price").val("");
         }
 
         function validate(){
@@ -481,7 +483,7 @@
                 $("#div-warring").removeClass("d-none");
                 return false;
             }
-            if($.trim($("#area-content").val()).length < 1){
+            if($.trim($("#input-price").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }

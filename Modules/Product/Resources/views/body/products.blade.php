@@ -1,37 +1,36 @@
-<?php  
-    $i=0;
-?>
-@foreach($list as $cate)
-    <?php 
-        $i++;
-    ?>
+
+@foreach($list as $item)
     <tr class="tr-shadow">
-        <td>{{$i}}</td>
-        <td>{{$cate['title']}}</td>
-        <td class="text-right">{{$cate['price']}}</td>
-        <td class="text-right">{{$cate['price_compare']}}</td>
+        <td>
+            <div class="m-2 float-left" style="display:block">
+                <img class="rounded m-1" style="height: 50px; width: 100px" src="{{$item['image_source']}}"/>
+            </div>    
+        </td>
+        <td>{{$item['title']}}</td>
+        <td class="text-right">{{$item['price']}}</td>
+        <td class="text-right">{{$item['price_compare']}}</td>
         <td class="text-right"> 
             @foreach ($categories as $category)
-                @if ($category['id'] == $cate['category_id'])
+                @if ($category['id'] == $item['category_id'])
                     {{$category['title']}}
                 @endif    
             @endforeach
         </td>
         <td class="text-right"> 
-            @foreach ($groups as $item)
-                @if ($item['id'] == $cate['group_id'])
-                    {{$item['title']}}
+            @foreach ($groups as $group)
+                @if ($group['id'] == $item['group_id'])
+                    {{$group['title']}}
                 @endif    
             @endforeach
         </td>
-        <td class="text-right">{{$cate['updated_at']}}</td>
+        <td class="text-right">{{$item['updated_at']}}</td>
         <td>
             <div class="table-data-feature">
             <button class="item" title="Edit" data-toggle="modal" data-target="#modal" id="btn-edit" 
-            onclick="showDialogUpdate({{$cate['id']}})">
+            onclick="showDialogUpdate({{$item['id']}})">
                     <i class="zmdi zmdi-edit"></i>
                 </button>
-                <button class="item" title="Delete" onclick="remove({{$cate['id']}})">
+                <button class="item" title="Delete" onclick="remove({{$item['id']}})">
                     <i class="zmdi zmdi-delete"></i>
                 </button>
                 <button class="item" title="More">

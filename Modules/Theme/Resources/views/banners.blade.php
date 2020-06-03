@@ -1,6 +1,6 @@
 @extends('admin.layout.cool-admin')
 @section('title-website')
-    Categories
+    Banners
 @endsection
 
 @section('modal')
@@ -25,7 +25,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW CATEGORY</h5>
+        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW BANNER</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -46,10 +46,6 @@
         <form>
           @csrf
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Title</label>
-            <input type="text" class="form-control" id="input-title">
-          </div>   
-          <div class="form-group">
             <label for="recipient-name" class="col-form-label">Image</label>
             <div class="form-row">
                 <div class="col-md-10">
@@ -67,22 +63,13 @@
           </div> 
           <div class="form-group">
             <div class="form-group">
-              <label for="message-text" class="col-form-label">Description</label>
-              <textarea class="form-control" id="area-description"></textarea>
+              <label for="message-text" class="col-form-label">Slogan</label>
+              <textarea class="form-control" id="area-slogan"></textarea>
             </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Active</label>
-            <input type="number" class="form-control" id="select-active">
-          </div>
-          <div class="form-group">
-            <label>Parent</label>
-            <select class="form-control" id="select-parent">
-                <option value="0">---Is parent---</option>
-                @foreach ($parents as $item)
-                    <option value="{{$item['id']}}">{{$item['title']}}</option>
-                @endforeach
-            </select>
+            <label for="recipient-name" class="col-form-label">Index</label>
+            <input type="number" class="form-control" id="input-index">
           </div>
           <input type="submit" id="input-id" name="input-id" value="0" hidden>
         </form>
@@ -120,7 +107,7 @@
                     </select>
                     <div class="dropDownSelect2"></div>
                 </div>
-                <button class="au-btn-filter" onclick="filter_List()">
+                <button class="au-btn-filter">
                     <i class="zmdi zmdi-filter-list"></i>filters</button>
             </div>
             <div class="table-data__tool-right">
@@ -141,17 +128,15 @@
             <table class="table table-data2">
                 <thead>
                     <tr>
-                        <th>serial</th>
-                        <th>title</th>
-                        <th>descride</th>
-                        <th>active</th>
-                        <th>parent</th>
+                        <th>Image</th>
+                        <th>Slogan</th>
+                        <th>index</th>
                         <th>updated</th>
                         <th>action</th>
                     </tr>
                 </thead>
                 <tbody id="body-list">
-                    @include('product::body.categories')
+                    @include('theme::body.banners')
                 </tbody>
             </table>
         </div>
@@ -168,7 +153,6 @@
     <script>
         var page = 
         <?php $page = 1; if(isset($_GET['page'])) $page = $_GET['page']; echo $page; ?>; 
-        var url  = "";
         
         $(document).ready(function(){
             $("#choose-image").on('click', function(){
@@ -181,7 +165,7 @@
                             var file = evt.data.files.first();
                             $("#input-image").val(file.getUrl());
                             var html = '<div class="m-2 float-left" style="display:block">'
-                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+file.getUrl()+'"/>'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 350px" src="'+file.getUrl()+'"/>'
                                     + '</div>';
                             $("#preview").html(html);
                         } );
@@ -197,18 +181,16 @@
             $("#btn-send").on('click', function(){
                 $('.btn').prop('disabled', false);
                 $id       = $("#input-id").val();
-                $title    = $.trim($("#input-title").val());
                 $image_source    = $.trim($("#input-image").val());
-                $parent_id    = $.trim($("#select-parent").val());
-                $active    = $.trim($("#select-active").val());
-                $description = $("#area-description").val();
+                $index    = $.trim($("#input-index").val());
+                $slogan = $("#area-slogan").val();
                 $token    = $("input[name = '_token']").val();
 
                 if(validate()){
                     if($("#btn-send").text() == "UPDATE"){
-                        update($id, $title, $image_source, $active, $parent_id, $description, $token);
+                        update($id, $image_source, $slogan, $index, $token);
                     }else {
-                        create($title, $image_source, $active, $parent_id, $description, $token);
+                        create($image_source, $slogan, $index, $token);
                     }    
                 }
             });
@@ -220,16 +202,14 @@
             });
         });
 
-        function create($title, $image_source, $active, $parent_id, $description, $token){
+        function create($image_source, $slogan, $index, $token){
             $.post(
-            "{{route('categories.store').'?page='}}" + page,
+            "{{route('banners.store')}}",
             {
               _token  : $token, 
-              title   : $title,
               image_source   : $image_source,
-              active  : $active,
-              parent_id: $parent_id,
-              description: $description
+              slogan  : $slogan,
+              index: $index
             },
             function(data, status){
                 if(data['success']){
@@ -265,7 +245,7 @@
             getItem($id);
         }
         function getItem($id){
-            var url = "{{route('categories.show', 0)}}" + $id + "?page=" + page; 
+            var url = "{{route('banners.show', 0)}}" + $id; 
             $.ajax({
                 url : url,
                 type: 'GET',
@@ -274,14 +254,12 @@
                         $("#div-notify").addClass("d-none");
                         try{    
                             $("#input-id").val($data['result']['id']);
-                            $("#input-title").val($data['result']['title']);
                             $("#input-image").val($data['result']['image_source']);
-                            $("#select-active").val($data['result']['active']);
-                            $("#select-parent").val($data['result']['parent_id']);
-                            $("#area-description").val($data['result']['description']); 
+                            $("#input-index").val($data['result']['index']);
+                            $("#area-slogan").val($data['result']['slogan']); 
                             if($data['result']['image_source'] != null){
                                 var html = '<div class="m-2 float-left" style="display:block">'
-                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+$data['result']['image_source']+'"/>'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 350px" src="'+$data['result']['image_source']+'"/>'
                                     + '</div>';
                                 $("#preview").html(html);
                             }
@@ -300,18 +278,16 @@
             });
         }
 
-        function update($id, $title, $image_source, $active, $parent_id, $description, $token){
-            var url = "{{route('categories.update', 0)}}" + $id; 
+        function update($id, $image_source, $slogan, $index, $token){
+            var url = "{{route('banners.update', 0)}}" + $id; 
             $.ajax({
                 url: url,
                 type: 'PUT',
                 data: {
                     _token  : $token, 
-                    title   : $title,
                     image_source   : $image_source,
-                    active  : $active,
-                    parent_id: $parent_id,
-                    description: $description
+                    index  : $index,
+                    slogan: $slogan
                 },
                 error: function(error){
                     messageWarning('Error...');
@@ -334,7 +310,7 @@
         function remove($id){
             if(confirm("You waint delete it?")){
                 var token = $("input[name = '_token']").val();
-                var url = "{{route('categories.destroy', 0)}}" + $id; 
+                var url = "{{route('banners.destroy', 0)}}" + $id; 
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -359,7 +335,7 @@
 
         function refresh(){
             $.ajax({
-                url: "{{route('categories.create')}}",
+                url: "{{route('banners.create')}}",
                 type: 'GET',
                 error: function (error) {
                     msg = "Error refresh data!";
@@ -371,50 +347,21 @@
             });
         }
 
-        function filter_List(){
-
-            $property  = $("#property").val();
-            $value     = $("#value-property").val();
-
-            $.post(
-              url,
-              {
-                _token  : $("input[name = '_token']").val(), 
-                action  : "filter-list", 
-                id      : 0,
-                title   : "_",
-                descride: "_",
-                property: $property,
-                value   : $value
-              },
-              function (data, status){
-                  if(status == "success"){
-                    $("#body-list").html(data);
-                  }else{
-                    msg = "Error Filter List!";
-                    show_Alert_Warning(msg);
-                  }
-              }  
-            );
-        }
-
         function formInsert(){
             $("#btn-send").text('Add');
             $("#input-id").val(0);
-            $("#input-title").val("");
+            $("#input-index").val("");
             $("#input-image").val("");
-            $("#select_active").val(1);
-            $("#select_parent").val(0);
-            $("#area-description").val("");
+            $("#area-slogan").val("");
             $("#preview").html('');
         }
 
         function validate(){
-            if($.trim($("#input-title").val()).length < 1){
+            if($.trim($("#input-image").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }
-            if($.trim($("#area-description").val()).length < 1){
+            if($.trim($("#area-slogan").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }

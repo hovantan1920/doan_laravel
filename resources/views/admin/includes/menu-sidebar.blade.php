@@ -51,22 +51,20 @@
                         <i class="fas fa-map-marker-alt"></i>Brands</a>
                 </li>
                 <hr>
-                <li class="has-sub" id="menu-theme">
+                <li class="has-sub" id="menu-themes">
                     <a class="js-arrow" href="#">
-                        <i class="fas fa-paint-brush"></i>Theme
+                        <i class="fas fa-paint-brush"></i>Themes
                     </a>
                     <ul class="list-unstyled navbar__sub-list js-sub-list">
                         <li>
-                            <a href="{{url('admin/user')}}"><i class="fas fa-user"></i>User</a>
+                            <a href="{{url('admin/banners')}}"><i class="fab fa-uikit"></i>Banners</a>
                         </li>
                         <li>
-                            <a href="{{url('admin/user/roles')}}"><i class="fas fa-street-view"></i>Role</a>
-                        </li>
-                        <li>
-                            <a href="{{url('admin/user/permissions')}}"><i class="fas fa-lock "></i>Permission</a>
+                            <a href="{{url('admin/styles')}}"><i class="fab fa-uikit"></i>Styles</a>
                         </li>
                     </ul>
                 </li>
+                <hr>
             </ul>
         </nav>
     </div>
