@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 //Model
 use Modules\Product\Entities\Category;
 use Modules\Product\Entities\Product;
+use Modules\Product\Entities\ProductGroup;
+use Modules\Theme\Entities\Banner;
 
 class Controller extends BaseController
 {
@@ -22,24 +24,21 @@ class Controller extends BaseController
 
     public function index(){
         Category::fixTree();
-        $categories = Category::get()->toTree();
+        $categories = Category::get()->toTree();$banners = Banner::orderBy('index', 'asc')->limit(3)->get();
+        $groups = ProductGroup::orderBy('index', 'asc')->limit(3)->get();
+        $collections = [];
+        foreach ($groups as $col) {
+            $products = Product::where('group_id', $col->id)->limit(Config('product.limit'))->get();
+            array_push($collections, [$col->index=>$products]);
+        }
         $bestSellers = Product::where('group_id', Config('product.groups.seller.id'))->limit(Config('product.limit'))->get();
         $newProducts = Product::where('group_id', Config('product.groups.new.id'))->limit(Config('product.limit'))->get();
-        // return response()->json([
-        //     'best'=>$bestSellers,
-        //     'se'=>Config('product.group-product.best-sellers'),
-        //     'li'=>Config('product.limit-show')
-        // ]);
-        
-        // $cookie = Cookie::make('name', 'value', 5);
-        // return response()->view('index', [
-        //     'categories'=>$categories, 
-        //     'bestSellers'=>$bestSellers, 
-        //     'newProducts'=>$newProducts
-        // ])->withCookie($cookie);
         
         return response()->view('index', [
             'categories'=>$categories, 
+            'banners'=>$banners,
+            'groups'=>$groups,
+            'collections'=>$collections,
             'bestSellers'=>$bestSellers, 
             'newProducts'=>$newProducts
         ]);

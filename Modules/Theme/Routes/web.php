@@ -11,6 +11,7 @@
 |
 */
 
-Route::prefix('theme')->group(function() {
-    Route::get('/', 'ThemeController@index');
+Route::group(['prefix'=>'admin', 'middleware'=>'admin.login'], function(){
+    Route::resource('banners', 'BannerController');
+    Route::resource('styles', 'StyleController');
 });

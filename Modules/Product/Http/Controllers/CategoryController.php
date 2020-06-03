@@ -52,7 +52,6 @@ class CategoryController extends Controller
             ]);
     
             $status = false;
-            $data = $request->all();
             $category = new Category();
             $category->title = $request->title;
             $category->image_source = $request->image_source;
