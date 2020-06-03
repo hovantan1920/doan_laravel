@@ -26,7 +26,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Item Product</h5>
+        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW PRODUCT</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -471,10 +471,9 @@
             $("#input-id").val(0);
             $("#input-title").val("");
             $("#input-image").val("");
-            $("#select_active").val(1);
-            $("#select_parent").val(0);
+            $("#input-gallery").val("");
             $("#preview").html('');
-            $("#area-descride").val("");
+            $("#area-content").val("");
         }
 
         function validate(){

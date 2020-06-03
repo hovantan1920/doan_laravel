@@ -25,7 +25,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Item Categorie</h5>
+        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW CATEGORY</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -405,7 +405,7 @@
             $("#input-image").val("");
             $("#select_active").val(1);
             $("#select_parent").val(0);
-            $("#area-descride").val("");
+            $("#area-description").val("");
             $("#preview").html('');
         }
 

@@ -16,6 +16,9 @@
         case "groups":
             $("#menu-groups").addClass("active");
             break; 
+        case "brands":
+            $("#menu-brands").addClass("active");
+            break; 
         default:
             $("#menu-home").addClass("active");
             break;  
