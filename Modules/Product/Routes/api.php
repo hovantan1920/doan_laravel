@@ -27,7 +27,7 @@ Route::group(['prefix' => 'categories'], function () {
 });
 
 Route::group(['prefix' => 'groups'], function () {
-    Route::get('/', 'Api\ProuductGroupController@index');
+    Route::get('/', 'Api\ProductGroupController@index');
 });
 
 Route::group(['prefix' => 'brands'], function () {

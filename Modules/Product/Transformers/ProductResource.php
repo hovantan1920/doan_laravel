@@ -23,7 +23,7 @@ class ProductResource extends Resource
             'price_compare' => $this->price_compare,
             'category' => $this->category()->first(),
             'group' => $this->group()->first(),
-            'brand' => $this->brand(),
+            'brand' => $this->brand()->first(),
             'gallery'=>$this->gallery()->get()
         ];
     }

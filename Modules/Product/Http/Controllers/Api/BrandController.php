@@ -16,11 +16,18 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = Brand::get();
-        return response()->json([
-            'status'=> 1,
-            'brands'=> BrandResource::collection($data)
-        ]);
+        try {
+            $data = Brand::get();
+            return response()->json([
+                'status'=> 1,
+                'brands'=> BrandResource::collection($data)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
     }
 
     /**

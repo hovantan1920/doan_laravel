@@ -20,7 +20,7 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsTo('Modules\Product\Entities\Category');
+        return $this->belongsTo('Modules\Product\Entities\Category', 'parent_id');
     }
 
     public function getLftName()

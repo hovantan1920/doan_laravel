@@ -16,12 +16,19 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        Category::fixTree();
-        $categories = Category::get()->toTree();
-        return response()->json([
-            'status'=> 1,
-            'categories'=>CategoryResource::collection($categories)
-        ]);
+        try {
+            Category::fixTree();
+            $categories = Category::get()->toTree();
+            return response()->json([
+                'status'=> 1,
+                'categories'=>CategoryResource::collection($categories)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
     }
 
     /**

@@ -16,11 +16,18 @@ class ProductGroupController extends Controller
      */
     public function index()
     {
-        $data = ProductGroup::get()->toTree();
-        return response()->json([
-            'status'=> 1,
-            'groups'=>ProductGroupResource::collection($data)
-        ]);
+        try {
+            $data = ProductGroup::get();
+            return response()->json([
+                'status'=> 1,
+                'groups'=>ProductGroupResource::collection($data)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
     }
 
     /**
