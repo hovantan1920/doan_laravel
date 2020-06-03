@@ -79,7 +79,7 @@
             <div class="col-lg-3 mb-4 text-center">
               <div class="product-entry border">
                 <a href="{{url("detail/$item[id]")}}" class="prod-img">
-                  <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                  <img src="{{url("$item[image_source]")}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
                 </a>
                 <div class="desc">
                   <h2><a href="{{url("detail/$item[id]")}}">{{$item['title']}}</a></h2>
@@ -104,7 +104,7 @@
             <div class="col-lg-3 mb-4 text-center">
               <div class="product-entry border">
                 <a href="{{url("detail/$item[id]")}}" class="prod-img">
-                  <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                  <img src="{{url("$item[image_source]")}}" class="img-fluid" alt="">
                 </a>
                 <div class="desc">
                   <h2><a href="{{url("detail/$item[id]")}}">{{$item['title']}}</a></h2>

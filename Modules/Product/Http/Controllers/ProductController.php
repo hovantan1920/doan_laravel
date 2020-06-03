@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 //Model
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\Category;
+use Modules\Product\Entities\Gallery;
 use Modules\Product\Entities\ProductGroup;
 
 class ProductController extends Controller
@@ -60,11 +61,20 @@ class ProductController extends Controller
             $model = new Product();
             $model->title = $request->title;
             $model->content = $request->content;
+            $model->image_source = $request->image_source;
             $model->price = $request->price;
             $model->price_compare = $request->price_compare;
             $model->category_id = $request->category_id;
             $model->group_id = $request->group_id;
             $status = $model->save();
+
+            if(isset($request->gallery) && $status){
+                $gallery = [];
+                foreach ($request->gallery as $image) {
+                    array_push($gallery, ['image_source'=> $image, 'product_id' => $model->id]);
+                }
+                Gallery::insert($gallery);
+            }
             
             return response()->json(['success' => $status]);
         } catch (\Throwable $th) {
@@ -81,10 +91,12 @@ class ProductController extends Controller
     {
         try {
             $rs = Product::where('id', $id)->first();
+            $gallery = $rs->gallery()->get();
             return response()->json([
                 'success' => true,
                 'id'=>$id,
-                'result' => $rs
+                'result' => $rs,
+                'gallery'=> $gallery
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -113,7 +125,17 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $status = Product::where('id', $id)->update($request->except(['_token']));
+            $status = Product::where('id', $id)->update($request->except(['_token', 'gallery']));
+            if($status){
+                $gallery = [];
+                if(isset($request->gallery)){
+                    Gallery::where('product_id', $id)->delete();
+                    foreach ($request->gallery as $image) {
+                        array_push($gallery, ['image_source'=> $image, 'product_id' => $id]);
+                    }
+                    Gallery::insert($gallery);
+                }
+            }
             return response()->json(['success' => $status, 'data'=> $request->all()]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false, 'msg'=> $th->getMessage()]);

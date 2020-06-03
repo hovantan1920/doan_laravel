@@ -18,8 +18,8 @@ class CreateProductTable extends Migration
             $table->string('title', '150');
             $table->text('content');
             $table->integer('price');
-            $table->string('image_source')->nullable();
-            $table->integer('price_compare');
+            $table->string('image_source');
+            $table->integer('price_compare')->nullable();
             $table->integer('category_id')->unsigned();
             $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamps();

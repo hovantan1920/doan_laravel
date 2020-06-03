@@ -73,6 +73,7 @@ class Controller extends BaseController
         Category::fixTree();
         $categories = Category::get()->toTree();
         $product = Product::find($id);
+        $gallery = $product->gallery()->get();
         // $value = Cookie::get('name');
         // return response()->json([
         //     'id'=>$id,
@@ -82,6 +83,7 @@ class Controller extends BaseController
         return response()->view('detail', [
             'categories'=>$categories, 
             'product'=>$product,
+            'gallery'=>$gallery
         ]);;
     }
 

@@ -51,7 +51,7 @@
             <input type="text" class="form-control" id="input-title" name="title-categorie">
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Images</label>
+            <label for="recipient-name" class="col-form-label">Image</label>
             <div class="form-row">
                 <div class="col-md-10">
                 <input type="text" class="form-control" id="input-image" placeholder="Name image..." disabled>
@@ -61,7 +61,23 @@
                 </div>
             </div>  
             <div>
-                <div id="previews" class="@isset($product->gallery) @if(!empty($product->gallery)) bg-light @endif @endisset">
+                <div id="preview">
+                </div>
+                <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Gallery</label>
+            <div class="form-row">
+                <div class="col-md-10">
+                <input type="text" class="form-control" id="input-gallery" placeholder="Images..." disabled>
+                </div>
+                <div class="col-md-2 text-center">
+                    <button id="choose-gallery" class="btn btn-primary">Choose</button>
+                </div>
+            </div>  
+            <div>
+                <div id="previews">
                     {{-- @isset($product->gallery)
                         @if(!empty($product->gallery))
                             @foreach(\Modules\Product\Entities\GalleryProduct::where('product_id', $product->id)->get() as $file)
@@ -191,27 +207,39 @@
     <script>
         var page = 
         <?php $page = 1; if(isset($_GET['page'])) $page = $_GET['page']; echo $page; ?>; 
-        var url  = "";
-        var images = [];
+        var gallery = [];
         
         $(document).ready(function(){
 
             $("#choose-image").on('click', function(){
-                // CKFinder.popup( {
-                //     chooseFiles: true,
-                //     width: 800,
-                //     height: 600,
-                //     onInit: function( finder ) {
-                //         finder.on( 'files:choose', function( evt ) {
-                //             var file = evt.data.files.first();
-                //             $("#input-image").val(file.getUrl());
-                //         } );
+                CKFinder.popup( {
+                    chooseFiles: true,
+                    width: 800,
+                    height: 600,
+                    onInit: function( finder ) {
+                        finder.on( 'files:choose', function( evt ) {
+                            var file = evt.data.files.first();
+                            $("#input-image").val(file.getUrl());
+                            var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+file.getUrl()+'"/>'
+                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
+                                    + '</div>';
+                            $("#preview").html(html);
+                        } );
 
-                //         finder.on( 'file:choose:resizedImage', function( evt ) {
-                //             $("#input-image").val(evt.data.file.getUrl());
-                //         } );
-                //     }
-                // } );
+                        finder.on( 'file:choose:resizedImage', function( evt ) {
+                            $("#input-image").val(evt.data.file.getUrl());
+                            var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+evt.data.file.getUrl()+'"/>'
+                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
+                                    + '</div>';
+                            $("#preview").html(html);
+                        } );
+                    }
+                } );
+                return false;
+            });
+            $("#choose-gallery").on('click', function(){
                 CKFinder.modal( {
                     chooseFiles: true,
                     width: 800,
@@ -220,13 +248,12 @@
                         finder.on( 'files:choose', function( evt ) {
                             console.log(evt.data.files);
                             var files = evt.data.files;
-                            var file = evt.data.files.first();
                             var html = '';
-                            $("#input-image").val(file.getUrl());
+                            $("#input-gallery").val("Choosed: " + files.length);
                             $("#previews").addClass("bg-light");
                             files.forEach( function( file, i ) {
+                                gallery.push(file.getUrl());
                                 html += '<div class="m-2 float-left" style="display:block">'
-                                        +'<input type="hidden" name="images[]" class="form-control input-sm" readonly value="'+file.getUrl()+'" />'
                                         + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+file.getUrl()+'"/>'
                                         + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
                                     + '</div>';
@@ -242,6 +269,7 @@
 
                 $id       = $("#input-id").val();
                 $title    = $.trim($("#input-title").val());
+                $image_souce = $("#input-image").val();
                 $price    = $.trim($("#input-price").val());
                 $price_compare    = $.trim($("#input-price_compare").val());
                 $category_id    = $.trim($("#select-category_id").val());
@@ -251,9 +279,9 @@
 
                 if(validate()){
                     if($("#btn-send").text() == "UPDATE"){
-                        update($id, $title, $price, $price_compare, $category_id, $group_id, $content, $token);
+                        update($id, $title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token);
                     }else {
-                        create($title, $price, $price_compare, $category_id, $group_id, $content, $token);
+                        create($title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token);
                     }    
                 }
             });
@@ -265,13 +293,19 @@
             });
         });
 
-        function create($title, $price, $price_compare, $category_id, $group_id, $content, $token){
+        function deleteFile(object){
+            console.log(object);
+        }
+
+        function create($title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token){
             $.post(
             "{{route('products.store').'?page='}}" + page,
             {
               _token  : $token, 
               title   : $title,
               price   : $price,
+              image_source : $image_souce,
+              gallery : gallery,
               price_compare  : $price_compare,
               category_id: $category_id,
               content: $content,
@@ -279,6 +313,7 @@
             },
             function(data, status){
                 if(data['success']){
+                    gallery = [];
                     $("#div-notify").addClass("d-none");
                     messageSuccess();
                     $("#btn-close").click();
@@ -312,7 +347,7 @@
             getItem($id);
         }
         function getItem($id){
-            var url = "{{route('products.show', 0)}}" + $id + "?page=" + page; 
+            var url = "{{route('products.show', 0)}}" + $id; 
             $.ajax({
                 url : url,
                 type: 'GET',
@@ -322,11 +357,18 @@
                         try{    
                             $("#input-id").val($data['result']['id']);
                             $("#input-title").val($data['result']['title']);
+                            $("#input-image").val($data['result']['image_source']);
                             $("#input-price").val($data['result']['price']);
                             $("#input-price_compare").val($data['result']['price_compare']);
                             $("#select-category_id").val($data['result']['category_id']);
                             $("#select-group_id").val($data['result']['group_id']);
                             $("#area-content").val($data['result']['content']); 
+                            var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 150px" src="'+$data['result']['image_source']+'"/>'
+                                        + '<i class="fa fa-trash text-danger" onclick="return deleteFile(this)"></i>'
+                                    + '</div>';
+                            $("#preview").html(html);
+                            $("#input-gallery").val("Choosed: " + $data['gallery'].length);
                         }
                         catch(e){
                             console.log(e);
@@ -342,15 +384,26 @@
             });
         }
 
-        function update($id, $title, $price, $price_compare, $category_id, $group_id, $content, $token){
+        function update($id, $title, $image_souce, $price, $price_compare, $category_id, $group_id, $content, $token){
             var url = "{{route('products.update', 0)}}" + $id; 
             $.ajax({
                 url: url,
                 type: 'PUT',
-                data: {
+                data: gallery.length != 0 ? {
                     _token  : $token, 
                     title   : $title,
                     price   : $price,
+                    image_source : $image_souce,
+                    gallery : gallery,
+                    price_compare  : $price_compare,
+                    category_id: $category_id,
+                    content: $content,
+                    group_id: $group_id
+                } : {
+                    _token  : $token, 
+                    title   : $title,
+                    price   : $price,
+                    image_source : $image_souce,
                     price_compare  : $price_compare,
                     category_id: $category_id,
                     content: $content,
@@ -361,6 +414,7 @@
                 },
                 success: function(data) {
                     if(data['success']){
+                        gallery = [];
                         $("#div-notify").addClass("d-none");
                         messageSuccess();
                         $("#btn-close").click();

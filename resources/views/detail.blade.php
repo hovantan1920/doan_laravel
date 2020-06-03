@@ -13,7 +13,6 @@
         </div>
     </div>
 
-
     <div class="colorlib-product">
         <div class="container">
             <div class="row row-pb-lg product-detail-wrap">
@@ -26,27 +25,25 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="item">
-                            <div class="product-entry border">
-                                <a href="#" class="prod-img">
-                                    <img src="images/item-2.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-                                </a>
+                        @if (count($gallery) != 0)
+                            @foreach ($gallery as $item)
+                                <div class="item">
+                                    <div class="product-entry border">
+                                        <a href="#" class="prod-img">
+                                            <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="item">
+                                <div class="product-entry border">
+                                    <a href="#" class="prod-img">
+                                        <img src="{{$product['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="item">
-                            <div class="product-entry border">
-                                <a href="#" class="prod-img">
-                                    <img src="images/item-3.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <div class="product-entry border">
-                                <a href="#" class="prod-img">
-                                    <img src="images/item-4.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-                                </a>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col-sm-4">
