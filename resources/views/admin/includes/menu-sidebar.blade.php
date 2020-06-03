@@ -1,7 +1,7 @@
 <!-- MENU SIDEBAR-->
 <aside class="menu-sidebar d-none d-lg-block">
     <div class="logo">
-        <a href="{{url('admin')}}">
+        <a href="{{url('/')}}">
             <img src="{{asset('images/icon/logo.png')}}" alt="Cool Admin" />
         </a>
     </div>
@@ -38,13 +38,17 @@
                     <a href="{{url('admin/categories')}}">
                         <i class="fas fa-map-marker-alt"></i>Categories</a>
                 </li>
+                <li id="menu-groups">
+                    <a href="{{url('admin/groups')}}">
+                        <i class="fas fa-map-marker-alt"></i>Groups</a>
+                </li>
                 <li id="menu-products">
                     <a href="{{url('admin/products')}}">
                         <i class="fas fa-map-marker-alt"></i>Products</a>
                 </li>
-                <li id="menu-groups">
-                    <a href="{{url('admin/groups')}}">
-                        <i class="fas fa-map-marker-alt"></i>Groups</a>
+                <li id="menu-brands">
+                    <a href="{{url('admin/brands')}}">
+                        <i class="fas fa-map-marker-alt"></i>Brands</a>
                 </li>
                 <hr>
                 <li class="has-sub" id="menu-theme">

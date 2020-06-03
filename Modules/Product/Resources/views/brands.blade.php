@@ -1,7 +1,6 @@
 @extends('admin.layout.cool-admin')
-
 @section('title-website')
-    GroupProducts
+    Brands
 @endsection
 
 @section('modal')
@@ -23,15 +22,15 @@
     <strong>Warning!</strong> <span id="warning-msg"></span><i class="fa fa-times ml-3 btn-close-alert" aria-hidden="true" id=""></i>
 </div>
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW GROUP</h5>
+        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW BRAND</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body  p-4 m-2">
         <div id="div-warring" class="bg-danger pl-5 py-2 text-white d-none">
             <ul>
             <li>The title field is require.</li>
@@ -48,8 +47,24 @@
           @csrf
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Title</label>
-            <input type="text" class="form-control" id="input-title" name="title-categorie">
-          </div>
+            <input type="text" class="form-control" id="input-title">
+          </div>   
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Image</label>
+            <div class="form-row">
+                <div class="col-md-10">
+                <input type="text" class="form-control" id="input-image" placeholder="Name image..." disabled>
+                </div>
+                <div class="col-md-2 text-center">
+                    <button id="choose-image" class="btn btn-primary">Choose</button>
+                </div>
+            </div>
+            <div>
+                <div id="preview">
+                </div>
+                <div class="clearfix"></div>
+            </div>  
+          </div> 
           <div class="form-group">
             <div class="form-group">
               <label for="message-text" class="col-form-label">Description</label>
@@ -57,8 +72,8 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Index</label>
-            <input type="number" class="form-control" id="input-index">
+            <label for="recipient-name" class="col-form-label">Country</label>
+            <input type="text" class="form-control" id="input-country">
           </div>
           <input type="submit" id="input-id" name="input-id" value="0" hidden>
         </form>
@@ -96,7 +111,7 @@
                     </select>
                     <div class="dropDownSelect2"></div>
                 </div>
-                <button class="au-btn-filter">
+                <button class="au-btn-filter" onclick="filter_List()">
                     <i class="zmdi zmdi-filter-list"></i>filters</button>
             </div>
             <div class="table-data__tool-right">
@@ -119,13 +134,14 @@
                     <tr>
                         <th>serial</th>
                         <th>title</th>
-                        <th>description</th>
-                        <th class="text-right">index</th>
-                        <th class="text-center">action</th>
+                        <th>descride</th>
+                        <th>country</th>
+                        <th>updated</th>
+                        <th>action</th>
                     </tr>
                 </thead>
                 <tbody id="body-list">
-                    @include('product::body.groups')
+                    @include('product::body.brands')
                 </tbody>
             </table>
         </div>
@@ -142,23 +158,45 @@
     <script>
         var page = 
         <?php $page = 1; if(isset($_GET['page'])) $page = $_GET['page']; echo $page; ?>; 
-        var url  = "";
         
         $(document).ready(function(){
+            $("#choose-image").on('click', function(){
+                CKFinder.popup( {
+                    chooseFiles: true,
+                    width: 800,
+                    height: 600,
+                    onInit: function( finder ) {
+                        finder.on( 'files:choose', function( evt ) {
+                            var file = evt.data.files.first();
+                            $("#input-image").val(file.getUrl());
+                            var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+file.getUrl()+'"/>'
+                                    + '</div>';
+                            $("#preview").html(html);
+                        } );
+
+                        finder.on( 'file:choose:resizedImage', function( evt ) {
+                            $("#input-image").val(evt.data.file.getUrl());
+                        } );
+                    }
+                } );
+                return false;
+            });
 
             $("#btn-send").on('click', function(){
-
+                $('.btn').prop('disabled', false);
                 $id       = $("#input-id").val();
                 $title    = $.trim($("#input-title").val());
-                $index    = $.trim($("#input-index").val());
+                $image_source    = $.trim($("#input-image").val());
+                $country    = $.trim($("#input-country").val());
                 $description = $("#area-description").val();
                 $token    = $("input[name = '_token']").val();
 
                 if(validate()){
                     if($("#btn-send").text() == "UPDATE"){
-                        update($id, $title, $description, $index, $token);
+                        update($id, $title, $image_source, $country, $description, $token);
                     }else {
-                        create($title, $description, $index, $token);
+                        create($title, $image_source, $country, $description, $token);
                     }    
                 }
             });
@@ -170,13 +208,14 @@
             });
         });
 
-        function create($title, $description, $index, $token){
+        function create($title, $image_source, $country, $description, $token){
             $.post(
-            "{{route('groups.store').'?page='}}" + page,
+            "{{route('brands.store')}}",
             {
               _token  : $token, 
               title   : $title,
-              index   : $index,
+              image_source   : $image_source,
+              country  : $country,
               description: $description
             },
             function(data, status){
@@ -186,6 +225,7 @@
                     $("#btn-close").click();
                 }
                 else{
+                    console.log(data['msg']);
                     msg = "Error insert!";
                     $("#div-notify").removeClass("d-none");
                     messageWarning(msg);
@@ -213,7 +253,7 @@
             getItem($id);
         }
         function getItem($id){
-            var url = "{{route('groups.show', 0)}}" + $id + "?page=" + page; 
+            var url = "{{route('brands.show', 0)}}" + $id; 
             $.ajax({
                 url : url,
                 type: 'GET',
@@ -223,8 +263,15 @@
                         try{    
                             $("#input-id").val($data['result']['id']);
                             $("#input-title").val($data['result']['title']);
-                            $("#input-index").val($data['result']['index']);
+                            $("#input-image").val($data['result']['image_source']);
+                            $("#input-country").val($data['result']['country']);
                             $("#area-description").val($data['result']['description']); 
+                            if($data['result']['image_source'] != null){
+                                var html = '<div class="m-2 float-left" style="display:block">'
+                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+$data['result']['image_source']+'"/>'
+                                    + '</div>';
+                                $("#preview").html(html);
+                            }
                         }
                         catch(e){
                             console.log(e);
@@ -240,15 +287,16 @@
             });
         }
 
-        function update($id, $title, $description, $index, $token){
-            var url = "{{route('groups.update', 0)}}" + $id; 
+        function update($id, $title, $image_source, $country, $description, $token){
+            var url = "{{route('brands.update', 0)}}" + $id; 
             $.ajax({
                 url: url,
                 type: 'PUT',
                 data: {
                     _token  : $token, 
                     title   : $title,
-                    index   : $index,
+                    image_source   : $image_source,
+                    country  : $country,
                     description: $description
                 },
                 error: function(error){
@@ -272,7 +320,7 @@
         function remove($id){
             if(confirm("You waint delete it?")){
                 var token = $("input[name = '_token']").val();
-                var url = "{{route('groups.destroy', 0)}}" + $id; 
+                var url = "{{route('brands.destroy', 0)}}" + $id; 
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -297,7 +345,7 @@
 
         function refresh(){
             $.ajax({
-                url: "{{route('groups.create')}}",
+                url: "{{route('brands.create')}}",
                 type: 'GET',
                 error: function (error) {
                     msg = "Error refresh data!";
@@ -309,20 +357,45 @@
             });
         }
 
+        function filter_List(){
+
+            $property  = $("#property").val();
+            $value     = $("#value-property").val();
+
+            $.post(
+              url,
+              {
+                _token  : $("input[name = '_token']").val(), 
+                action  : "filter-list", 
+                id      : 0,
+                title   : "_",
+                descride: "_",
+                property: $property,
+                value   : $value
+              },
+              function (data, status){
+                  if(status == "success"){
+                    $("#body-list").html(data);
+                  }else{
+                    msg = "Error Filter List!";
+                    show_Alert_Warning(msg);
+                  }
+              }  
+            );
+        }
+
         function formInsert(){
             $("#btn-send").text('Add');
             $("#input-id").val(0);
             $("#input-title").val("");
-            $("#input-index").val("");
+            $("#input-image").val("");
+            $("#input-country").val("");
             $("#area-description").val("");
+            $("#preview").html('');
         }
 
         function validate(){
             if($.trim($("#input-title").val()).length < 1){
-                $("#div-warring").removeClass("d-none");
-                return false;
-            }
-            if($.trim($("#area-description").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }
@@ -331,7 +404,9 @@
         }
 
     </script>
-
+    @include('ckfinder::setup')
+    <script type="text/javascript" src="/js/ckfinder/ckfinder.js"></script>
+    <script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script>
     //This functions repeat!
     <script src="{{asset('js/m-script.js')}}"></script>
 @endsection

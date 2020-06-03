@@ -64,7 +64,7 @@
         <div class="row">
             <div class="col-sm-12 text-center">
                 <p>
-                    <span>Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved
+                    Copyright@ All rights reserved
                 </p>
             </div>
         </div>
