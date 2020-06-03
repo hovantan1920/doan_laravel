@@ -17,6 +17,7 @@ class CreateStylesTable extends Migration
             $table->bigIncrements('id');
             $table->string('key');
             $table->string('value');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
