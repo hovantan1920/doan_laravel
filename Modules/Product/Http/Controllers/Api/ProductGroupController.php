@@ -20,6 +20,7 @@ class ProductGroupController extends Controller
             $data = ProductGroup::get();
             return response()->json([
                 'status'=> 1,
+                'count'=>count($data),
                 'groups'=>ProductGroupResource::collection($data)
             ]);
         } catch (\Throwable $th) {

@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/theme', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/theme', function (Request $request) {
+//     return $request->user();
+// });
+Route::group(['prefix' => 'banners'], function () {
+    Route::get('/', 'Api\BannerController@index');
 });

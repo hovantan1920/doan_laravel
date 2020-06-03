@@ -1,14 +1,15 @@
 <?php
 
-namespace Modules\Product\Http\Controllers\Api;
+namespace Modules\Theme\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Product\Entities\Category;
-use Modules\Product\Transformers\CategoryResource;
 
-class CategoryController extends Controller
+use Modules\Theme\Entities\Banner;
+// use Modules\Theme\Transformers\BannerResource;
+
+class BannerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,12 +18,12 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            // Category::fixTree();
-            $categories = Category::get()->toTree();
+            $data = Banner::orderBy('index', 'asc')->limit(3)->get();
             return response()->json([
                 'status'=> 1,
-                'count'=>count($categories),
-                'categories'=>CategoryResource::collection($categories)
+                'count'=>count($data),
+                'banners'=> $data
+                // 'banners'=> BannerResource::collection($data)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -38,7 +39,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('product::create');
+        return view('theme::create');
     }
 
     /**
@@ -58,7 +59,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return view('product::show');
+        return view('theme::show');
     }
 
     /**
@@ -68,7 +69,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        return view('product::edit');
+        return view('theme::edit');
     }
 
     /**

@@ -20,8 +20,7 @@ class CategoryResource extends Resource
             'title' => $this->title,
             'image_source' => $this->image_source,
             'parent' => new CategoryResource($this->parent()->first()),
-            'children' => CategoryResource::collection(($this->descendantsOf($this->id)->toTree())),
-            'products' => ProductResource::collection($this->products()->paginate(Config('product.limit')))
+            'children' => CategoryResource::collection(($this->descendantsOf($this->id)->toTree()))
         ];
     }
 }
