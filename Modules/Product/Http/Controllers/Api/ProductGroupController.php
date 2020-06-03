@@ -5,6 +5,8 @@ namespace Modules\Product\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Product\Entities\ProductGroup;
+use Modules\Product\Transformers\ProductGroupResource;
 
 class ProductGroupController extends Controller
 {
@@ -14,7 +16,11 @@ class ProductGroupController extends Controller
      */
     public function index()
     {
-        return view('product::index');
+        $data = ProductGroup::get()->toTree();
+        return response()->json([
+            'status'=> 1,
+            'groups'=>ProductGroupResource::collection($data)
+        ]);
     }
 
     /**

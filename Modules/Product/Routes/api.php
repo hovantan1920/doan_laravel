@@ -31,5 +31,5 @@ Route::group(['prefix' => 'groups'], function () {
 });
 
 Route::group(['prefix' => 'brands'], function () {
-    Route::get('/', 'Api\ProuductGroupController@index');
+    Route::get('/', 'Api\BrandController@index');
 });

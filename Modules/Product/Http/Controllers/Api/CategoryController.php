@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Product\Entities\Category;
+use Modules\Product\Transformers\CategoryResource;
 
 class CategoryController extends Controller
 {
@@ -19,7 +20,7 @@ class CategoryController extends Controller
         $categories = Category::get()->toTree();
         return response()->json([
             'status'=> 1,
-            'categories'=>$categories
+            'categories'=>CategoryResource::collection($categories)
         ]);
     }
 

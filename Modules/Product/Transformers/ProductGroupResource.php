@@ -3,6 +3,7 @@
 namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\Resource;
+use Modules\Product\Transformers\ProductResource;
 
 class ProductGroupResource extends Resource
 {
@@ -14,6 +15,11 @@ class ProductGroupResource extends Resource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'index' => $this->index,
+            'products' => ProductResource::collection($this->products()->paginate(Config('product.limit')))
+        ];
     }
 }

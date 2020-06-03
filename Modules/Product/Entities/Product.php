@@ -17,6 +17,10 @@ class Product extends Model
     {
         return $this->belongsTo('Modules\Product\Entities\ProductGroup');
     }
+    public function brand()
+    {
+        return $this->belongsTo('Modules\Product\Entities\Brand');
+    }
     public function gallery()
     {
         return $this->hasMany('Modules\Product\Entities\Gallery');

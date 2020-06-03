@@ -3,6 +3,7 @@
 namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\Resource;
+use Modules\Product\Transformers\ProductResource;
 
 class CategoryResource extends Resource
 {
@@ -17,10 +18,10 @@ class CategoryResource extends Resource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
             'image_source' => $this->image_source,
-            'parent_id' => $this->parent_id,
-            'children' => UserResource::collection(($this->descendantsOf($this->id)->toTree()))
+            'parent' => new CategoryResource($this->parent()->first()),
+            'children' => CategoryResource::collection(($this->descendantsOf($this->id)->toTree())),
+            'products' => ProductResource::collection($this->products()->paginate(Config('product.limit')))
         ];
     }
 }

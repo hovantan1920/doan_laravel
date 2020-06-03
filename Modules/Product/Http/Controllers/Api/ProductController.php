@@ -5,6 +5,7 @@ namespace Modules\Product\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Product\Transformers\ProductResource;
 
 class ProductController extends Controller
 {

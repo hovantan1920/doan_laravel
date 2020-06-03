@@ -5,6 +5,8 @@ namespace Modules\Product\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Product\Entities\Brand;
+use Modules\Product\Transformers\BrandResource;
 
 class BrandController extends Controller
 {
@@ -14,7 +16,11 @@ class BrandController extends Controller
      */
     public function index()
     {
-        return view('product::index');
+        $data = Brand::get();
+        return response()->json([
+            'status'=> 1,
+            'brands'=> BrandResource::collection($data)
+        ]);
     }
 
     /**

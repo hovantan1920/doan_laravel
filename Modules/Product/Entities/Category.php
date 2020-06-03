@@ -18,6 +18,11 @@ class Category extends Model
         return $this->hasMany('Modules\Product\Entities\Product');
     }
 
+    public function parent()
+    {
+        return $this->belongsTo('Modules\Product\Entities\Category');
+    }
+
     public function getLftName()
     {
         return '_lft';
