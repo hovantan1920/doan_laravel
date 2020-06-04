@@ -17,12 +17,27 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            // Category::fixTree();
+            Category::fixTree();
             $categories = Category::get()->toTree();
             return response()->json([
                 'status'=> 1,
                 'count'=>count($categories),
-                'categories'=>CategoryResource::collection($categories)
+                'categories'=>$categories
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
+    }
+
+    public function products(Request $request){
+        try {
+            $category = Category::findOrFail($request->id);
+            return response()->json([
+                'status'=> 1,
+                'category'=> new CategoryResource($category)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -58,7 +73,18 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return view('product::show');
+        try {
+            $category = Category::findOrFail($id);
+            return response()->json([
+                'status'=> 1,
+                'category'=> new CategoryResource($category)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
     }
 
     /**
