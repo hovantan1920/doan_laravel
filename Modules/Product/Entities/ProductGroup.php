@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductGroup extends Model
 {
     protected $table = "product_groups";
-    protected $fillable = ['id', 'title', 'description', 'index'];
+    protected $fillable = ['id', 'title', 'description', 'index', 'slug'];
 
     public function products()
     {

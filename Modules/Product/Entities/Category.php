@@ -11,7 +11,7 @@ class Category extends Model
     use NodeTrait;
 
     protected $table    = 'categories';
-    protected $fillable = ['id', 'title', 'description', 'image_source', 'active', 'parent_id'];
+    protected $fillable = ['id', 'title', 'description', 'image_source', 'active', 'parent_id', 'slug'];
     
     public function products()
     {

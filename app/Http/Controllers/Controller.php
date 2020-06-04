@@ -16,42 +16,68 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Product\Entities\Category;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductGroup;
+use Modules\Product\Entities\Brand;
 use Modules\Theme\Entities\Banner;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function index(){
+    public function __construct(){
         Category::fixTree();
-        $categories = Category::get()->toTree();$banners = Banner::orderBy('index', 'asc')->limit(3)->get();
+        $this->categories = Category::get()->toTree();
+    }
+
+    public function index(){
+        $banners = Banner::orderBy('index', 'asc')->limit(3)->get();
         $groups = ProductGroup::orderBy('index', 'asc')->limit(3)->get();
         $collections = [];
         foreach ($groups as $col) {
             $products = Product::where('group_id', $col->id)->limit(Config('product.limit'))->get();
             array_push($collections, [$col->index=>$products]);
         }
-        $bestSellers = Product::where('group_id', Config('product.groups.seller.id'))->limit(Config('product.limit'))->get();
-        $newProducts = Product::where('group_id', Config('product.groups.new.id'))->limit(Config('product.limit'))->get();
         
         return response()->view('index', [
-            'categories'=>$categories, 
+            'categories'=>$this->categories, 
             'banners'=>$banners,
             'groups'=>$groups,
             'collections'=>$collections,
-            'bestSellers'=>$bestSellers, 
-            'newProducts'=>$newProducts
         ]);
     }
 
-    public function category($id){
-        Category::fixTree();
-        $categories = Category::get()->toTree();
+    public function collection($slugParent){
+
+        $categorySlug = $this->getSlug(Category::where('slug', $slugParent)->first());
+        $groupSlug = $this->getSlug(ProductGroup::where('slug', $slugParent)->first());
+        $brandSlug = $this->getSlug(Brand::where('slug', $slugParent)->first());
+
+        switch ($slugParent) {
+            case $categorySlug:
+                return 'cate';
+                break;
+            
+            default:
+                return $categorySlug;
+                break;
+        }
+    }
+
+    private function getSlug($model){
+        return optional($model)->slug;
+    }
+
+    private function byCategory($id){
         $category = Category::find($id);
         $siblings = $category->siblings()->get();
         $parent = Category::ancestorsOf($id)->first();
+        $children = Category::descendantsOf($id);
         $products = Product::where('category_id', $id)
             ->limit(Config('product.limit'))->get();
+
+        foreach ($children as $child) {
+            # code...
+        }
+        
         // return response()->json([
         //     'id'=>$id,
         //     'sib'=>$siblings,
@@ -60,7 +86,7 @@ class Controller extends BaseController
         // ]);
         return View('bycategory', 
             [
-                'categories'=>$categories, 
+                'categories'=>$this-categories, 
                 'category'=>$category,
                 'siblings'=>$siblings,
                 'parent' =>$parent,
