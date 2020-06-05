@@ -55,6 +55,7 @@ class ProductGroupController extends Controller
             $model->title = $request->title;
             $model->description = $request->description;
             $model->index = $request->index;
+            $model->slug = str_slug($request->title . ' ' .rand(0, 1000), '-');
             $status = $model->save();
             
             return response()->json(['success' => $status]);
@@ -104,7 +105,8 @@ class ProductGroupController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $status = ProductGroup::where('id', $id)->update($request->except(['_token']));
+            $request->request->add(['slug' => str_slug($request->title . ' ' .rand(0, 1000), '-')]); 
+            $status = ProductGroup::where('id', $id)->update($request->except(['_token', 'gallery']));
             return response()->json(['success' => $status, 'data'=> $request->all()]);
         } catch (\Throwable $th) {
             return response()->json(['success' => false, 'msg'=> $th->getMessage()]);

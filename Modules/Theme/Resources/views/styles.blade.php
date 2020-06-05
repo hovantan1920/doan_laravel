@@ -1,6 +1,6 @@
 @extends('admin.layout.cool-admin')
 @section('title-website')
-    Categories
+    Styles
 @endsection
 
 @section('modal')
@@ -25,7 +25,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW CATEGORY</h5>
+        <h5 class="modal-title" id="exampleModalLabel">CREATE NEW STYLE</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -33,8 +33,7 @@
       <div class="modal-body  p-4 m-2">
         <div id="div-warring" class="bg-danger pl-5 py-2 text-white d-none">
             <ul>
-            <li>The title field is require.</li>
-            <li>The descride field is require.</li>
+                <li>Key and Value is require.</li>
             </ul>
         </div>
         <div id="div-notify" class="bg-danger pl-5 py-2 text-white d-none">
@@ -46,43 +45,18 @@
         <form>
           @csrf
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Title</label>
-            <input type="text" class="form-control" id="input-title">
-          </div>   
+            <label for="recipient-name" class="col-form-label">Key</label>
+            <input type="text" class="form-control" id="input-key">
+          </div>    
           <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Image</label>
-            <div class="form-row">
-                <div class="col-md-10">
-                <input type="text" class="form-control" id="input-image" placeholder="Name image..." disabled>
-                </div>
-                <div class="col-md-2 text-center">
-                    <button id="choose-image" class="btn btn-primary">Choose</button>
-                </div>
-            </div>
-            <div>
-                <div id="preview">
-                </div>
-                <div class="clearfix"></div>
-            </div>  
-          </div> 
+            <label for="recipient-name" class="col-form-label">Value</label>
+            <input type="text" class="form-control" id="input-value">
+          </div>    
           <div class="form-group">
             <div class="form-group">
               <label for="message-text" class="col-form-label">Description</label>
               <textarea class="form-control" id="area-description"></textarea>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Active</label>
-            <input type="number" class="form-control" id="select-active">
-          </div>
-          <div class="form-group">
-            <label>Parent</label>
-            <select class="form-control" id="select-parent">
-                <option value="0">---Is parent---</option>
-                @foreach ($parents as $item)
-                    <option value="{{$item['id']}}">{{$item['title']}}</option>
-                @endforeach
-            </select>
           </div>
           <input type="submit" id="input-id" name="input-id" value="0" hidden>
         </form>
@@ -120,7 +94,7 @@
                     </select>
                     <div class="dropDownSelect2"></div>
                 </div>
-                <button class="au-btn-filter" onclick="filter_List()">
+                <button class="au-btn-filter">
                     <i class="zmdi zmdi-filter-list"></i>filters</button>
             </div>
             <div class="table-data__tool-right">
@@ -142,16 +116,15 @@
                 <thead>
                     <tr>
                         <th>serial</th>
-                        <th>title</th>
-                        <th>descride</th>
-                        <th>active</th>
-                        <th>parent</th>
+                        <th>key</th>
+                        <th>value</th>
+                        <th>description</th>
                         <th>updated</th>
                         <th>action</th>
                     </tr>
                 </thead>
                 <tbody id="body-list">
-                    @include('product::body.categories')
+                    @include('theme::body.styles')
                 </tbody>
             </table>
         </div>
@@ -168,47 +141,22 @@
     <script>
         var page = 
         <?php $page = 1; if(isset($_GET['page'])) $page = $_GET['page']; echo $page; ?>; 
-        var url  = "";
         
         $(document).ready(function(){
-            $("#choose-image").on('click', function(){
-                CKFinder.popup( {
-                    chooseFiles: true,
-                    width: 800,
-                    height: 600,
-                    onInit: function( finder ) {
-                        finder.on( 'files:choose', function( evt ) {
-                            var file = evt.data.files.first();
-                            $("#input-image").val(file.getUrl());
-                            var html = '<div class="m-2 float-left" style="display:block">'
-                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+file.getUrl()+'"/>'
-                                    + '</div>';
-                            $("#preview").html(html);
-                        } );
-
-                        finder.on( 'file:choose:resizedImage', function( evt ) {
-                            $("#input-image").val(evt.data.file.getUrl());
-                        } );
-                    }
-                } );
-                return false;
-            });
-
+            
             $("#btn-send").on('click', function(){
                 $('.btn').prop('disabled', false);
                 $id       = $("#input-id").val();
-                $title    = $.trim($("#input-title").val());
-                $image_source    = $.trim($("#input-image").val());
-                $parent_id    = $.trim($("#select-parent").val());
-                $active    = $.trim($("#select-active").val());
+                $key    = $.trim($("#input-key").val());
+                $value    = $.trim($("#input-value").val());
                 $description = $("#area-description").val();
                 $token    = $("input[name = '_token']").val();
 
                 if(validate()){
                     if($("#btn-send").text() == "UPDATE"){
-                        update($id, $title, $image_source, $active, $parent_id, $description, $token);
+                        update($id, $key, $value, $description, $token);
                     }else {
-                        create($title, $image_source, $active, $parent_id, $description, $token);
+                        create($key, $value, $description, $token);
                     }    
                 }
             });
@@ -220,15 +168,13 @@
             });
         });
 
-        function create($title, $image_source, $active, $parent_id, $description, $token){
+        function create($key, $value, $description, $token){
             $.post(
-            "{{route('categories.store').'?page='}}" + page,
+            "{{route('styles.store')}}" ,
             {
               _token  : $token, 
-              title   : $title,
-              image_source   : $image_source,
-              active  : $active,
-              parent_id: $parent_id,
+              key   : $key,
+              value   : $value,
               description: $description
             },
             function(data, status){
@@ -265,7 +211,7 @@
             getItem($id);
         }
         function getItem($id){
-            var url = "{{route('categories.show', 0)}}" + $id + "?page=" + page; 
+            var url = "{{route('styles.show', 0)}}" + $id; 
             $.ajax({
                 url : url,
                 type: 'GET',
@@ -274,17 +220,9 @@
                         $("#div-notify").addClass("d-none");
                         try{    
                             $("#input-id").val($data['result']['id']);
-                            $("#input-title").val($data['result']['title']);
-                            $("#input-image").val($data['result']['image_source']);
-                            $("#select-active").val($data['result']['active']);
-                            $("#select-parent").val($data['result']['parent_id']);
+                            $("#input-key").val($data['result']['key']);
+                            $("#input-value").val($data['result']['value']);
                             $("#area-description").val($data['result']['description']); 
-                            if($data['result']['image_source'] != null){
-                                var html = '<div class="m-2 float-left" style="display:block">'
-                                        + '<img class="rounded m-1" style="height: 150px; width: 250px" src="'+$data['result']['image_source']+'"/>'
-                                    + '</div>';
-                                $("#preview").html(html);
-                            }
                         }
                         catch(e){
                             console.log(e);
@@ -300,17 +238,15 @@
             });
         }
 
-        function update($id, $title, $image_source, $active, $parent_id, $description, $token){
-            var url = "{{route('categories.update', 0)}}" + $id; 
+        function update($id, $key, $value, $description, $token){
+            var url = "{{route('styles.update', 0)}}" + $id; 
             $.ajax({
                 url: url,
                 type: 'PUT',
                 data: {
                     _token  : $token, 
-                    title   : $title,
-                    image_source   : $image_source,
-                    active  : $active,
-                    parent_id: $parent_id,
+                    key   : $key,
+                    value   : $value,
                     description: $description
                 },
                 error: function(error){
@@ -334,7 +270,7 @@
         function remove($id){
             if(confirm("You waint delete it?")){
                 var token = $("input[name = '_token']").val();
-                var url = "{{route('categories.destroy', 0)}}" + $id; 
+                var url = "{{route('styles.destroy', 0)}}" + $id; 
                 $.ajax({
                     url: url,
                     type: 'DELETE',
@@ -359,7 +295,7 @@
 
         function refresh(){
             $.ajax({
-                url: "{{route('categories.create')}}",
+                url: "{{route('styles.create')}}",
                 type: 'GET',
                 error: function (error) {
                     msg = "Error refresh data!";
@@ -371,50 +307,20 @@
             });
         }
 
-        function filter_List(){
-
-            $property  = $("#property").val();
-            $value     = $("#value-property").val();
-
-            $.post(
-              url,
-              {
-                _token  : $("input[name = '_token']").val(), 
-                action  : "filter-list", 
-                id      : 0,
-                title   : "_",
-                descride: "_",
-                property: $property,
-                value   : $value
-              },
-              function (data, status){
-                  if(status == "success"){
-                    $("#body-list").html(data);
-                  }else{
-                    msg = "Error Filter List!";
-                    show_Alert_Warning(msg);
-                  }
-              }  
-            );
-        }
-
         function formInsert(){
             $("#btn-send").text('Add');
             $("#input-id").val(0);
-            $("#input-title").val("");
-            $("#input-image").val("");
-            $("#select_active").val(1);
-            $("#select_parent").val(0);
+            $("#input-key").val("");
+            $("#input-value").val("");
             $("#area-description").val("");
-            $("#preview").html('');
         }
 
         function validate(){
-            if($.trim($("#input-title").val()).length < 1){
+            if($.trim($("#input-key").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }
-            if($.trim($("#area-description").val()).length < 1){
+            if($.trim($("#input-value").val()).length < 1){
                 $("#div-warring").removeClass("d-none");
                 return false;
             }
@@ -423,9 +329,6 @@
         }
 
     </script>
-    @include('ckfinder::setup')
-    <script type="text/javascript" src="/js/ckfinder/ckfinder.js"></script>
-    <script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script>
     //This functions repeat!
     <script src="{{asset('js/m-script.js')}}"></script>
 @endsection

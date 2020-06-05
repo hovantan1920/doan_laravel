@@ -15,73 +15,149 @@ use Illuminate\Support\Facades\Auth;
 //Model
 use Modules\Product\Entities\Category;
 use Modules\Product\Entities\Product;
+use Modules\Product\Entities\ProductGroup;
+use Modules\Product\Entities\Brand;
+use Modules\Theme\Entities\Banner;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function index(){
+    public function __construct(){
+        $this->pageName = 'FASHION Interesting';
         Category::fixTree();
-        $categories = Category::get()->toTree();
-        $bestSellers = Product::where('group_id', Config('product.groups.seller.id'))->limit(Config('product.limit'))->get();
-        $newProducts = Product::where('group_id', Config('product.groups.new.id'))->limit(Config('product.limit'))->get();
-        // return response()->json([
-        //     'best'=>$bestSellers,
-        //     'se'=>Config('product.group-product.best-sellers'),
-        //     'li'=>Config('product.limit-show')
-        // ]);
-        
-        // $cookie = Cookie::make('name', 'value', 5);
-        // return response()->view('index', [
-        //     'categories'=>$categories, 
-        //     'bestSellers'=>$bestSellers, 
-        //     'newProducts'=>$newProducts
-        // ])->withCookie($cookie);
-        
-        return response()->view('index', [
-            'categories'=>$categories, 
-            'bestSellers'=>$bestSellers, 
-            'newProducts'=>$newProducts
+        $this->categories = Category::get()->toTree();
+        \View::share([
+            'categories'=>$this->categories,
+            'pageName'=> $this->pageName . ' - ' . $this->pageName
         ]);
     }
 
-    public function category($id){
-        Category::fixTree();
-        $categories = Category::get()->toTree();
-        $category = Category::find($id);
-        $siblings = $category->siblings()->get();
-        $parent = Category::ancestorsOf($id)->first();
-        $products = Product::where('category_id', $id)
-            ->limit(Config('product.limit'))->get();
-        // return response()->json([
-        //     'id'=>$id,
-        //     'sib'=>$siblings,
-        //     'parent'=>$parent,
-        //     'cate'=>$category
-        // ]);
-        return View('bycategory', 
+    public function index(){
+        $banners = Banner::orderBy('index', 'asc')->limit(3)->get();
+        $groups = ProductGroup::orderBy('index', 'asc')->limit(3)->get();
+        $collections = [];
+        foreach ($groups as $col) {
+            $products = Product::where('group_id', $col->id)->limit(Config('product.limit'))->get();
+            array_push($collections, [$col->index=>$products]);
+        }
+        
+        return response()->view('index', [
+            'banners'=>$banners,
+            'groups'=>$groups,
+            'collections'=>$collections,
+        ]);
+    }
+
+    public function pages($slug){
+
+        $category = Category::where('slug', $slug)->first();
+        $group = ProductGroup::where('slug', $slug)->first();
+        $brand = Brand::where('slug', $slug)->first();
+        $product = null;
+
+        $categorySlug = $this->getSlug($category);
+        $groupSlug = $this->getSlug($group);
+        $brandSlug = $this->getSlug($brand);
+        $productSlug = null;
+
+        if (empty($category) && empty($group) && empty($brand)) {
+            $product = Product::where('slug', $slug)->first();
+            $productSlug = $this->getSlug($product);
+        }
+
+        switch ($slug) {
+            case $categorySlug:
+                return $this->viewCategory($category);
+                break;
+            case $groupSlug:
+                return $this->viewGroup($group);
+                break;
+            case $brandSlug:
+                return $this->viewBrand($brand);
+                break;
+
+            case $productSlug:
+                return $this->viewProduct($product);
+                break;
+            
+            default:
+                return view('error');
+                break;
+        }
+    }
+
+    private function getSlug($model){
+        return optional($model)->slug;
+    }
+
+    private function viewBrand($brand){
+        $id = $brand->id;
+        $siblings = Brand::where('id', '!=',  $id)->get();
+        $other = ['title'=> 'Collection', 'children'=>ProductGroup::get()];
+        $products = Product::where('brand_id', $id)
+            ->paginate(Config('product.limit'));
+        return View('collection', 
             [
-                'categories'=>$categories, 
-                'category'=>$category,
+                'pageName'=> $this->pageName . ' - ' . $brand->title,
+                'object'=>$brand,
+                'other' => $other,
                 'siblings'=>$siblings,
-                'parent' =>$parent,
                 'products'=>$products,
             ]);
     }
 
-    public function detail($id){
-        Category::fixTree();
-        $categories = Category::get()->toTree();
-        $product = Product::find($id);
+    private function viewGroup($group){
+        $id = $group->id;
+        $siblings = ProductGroup::where('id', '!=',  $id)->get();
+        $other = ['title'=> 'Brand', 'children'=>Brand::get()];
+        $products = Product::where('group_id', $id)
+            ->paginate(Config('product.limit'));
+        return View('collection', 
+            [
+                'pageName'=> $this->pageName . ' - ' . $group->title,
+                'object'=>$group,
+                'other' => $other,
+                'siblings'=>$siblings,
+                'products'=>$products,
+            ]);
+    }
+
+    private function viewCategory($category){
+        $id = $category->id;
+        $siblings = $category->siblings()->get();
+        $children = Category::descendantsOf($id);
+        $other = ['title'=> 'Brand', 'children'=>Brand::get()];
+        $arr = [$id];
+        foreach ($children as $child) {
+            array_push($arr, $child->id);
+        }
+        $products = Product::whereIn('category_id', $arr)
+            ->paginate(Config('product.limit'));
+
+        $active = '';
+        $parent = Category::where('id', $category->parent_id)->first();
+        if(empty($parent)){
+            $active = $category->slug;
+        }
+        else
+            $active = $parent->slug;
+
+        return View('collection', 
+            [
+                'active' => $active,
+                'pageName'=> $this->pageName . ' - ' . $category->title,
+                'object'=>$category,
+                'other' => $other,
+                'siblings'=>$siblings,
+                'products'=>$products,
+            ]);
+    }
+
+    private function viewProduct($product){
         $gallery = $product->gallery()->get();
-        // $value = Cookie::get('name');
-        // return response()->json([
-        //     'id'=>$id,
-        //     'val'=>$value
-        // ]);
-        
         return response()->view('detail', [
-            'categories'=>$categories, 
+            'pageName'=> $this->pageName . ' - ' . $product->title,
             'product'=>$product,
             'gallery'=>$gallery
         ]);;

@@ -15,6 +15,11 @@
         <script>
             $(document).ready(function(){
                 getCart();
+                @if (empty($active))
+                    $("#nav-home").addClass("active");
+                @else
+                    $("#nav-{{$active}}").addClass("active");
+                @endif
             });
             function getCart(){
                 var products = JSON.parse(Cookies.get('cart-products') ?? "[]");

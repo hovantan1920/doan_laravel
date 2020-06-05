@@ -9,10 +9,7 @@
                 <div class="col">
                     <p class="bread">
                         <span><a href="{{url('/')}}">Home</a></span>
-                        @if ($parent != null)
-                            / <span>{{$parent['title']}}</span>
-                        @endif
-                        / <span>{{$category['title']}}</span>
+                        / <span>{{$object['title']}}</span>
                     </p>
                 </div>
             </div>
@@ -24,12 +21,12 @@
             <div class="row">
                 <div class="col">
                     <div class="breadcrumbs-img" style="background-image: url({{url('images/cover-img-1.jpg')}});">
-                        <h2>{{$category['title']}}</h2>
+                        <h2>{{$object['title']}}</h2>
                     </div>
                     <div class="menu text-center">
                         <p>
                             @foreach ($siblings as $sibling)
-                                <a href="{{url("category/$sibling[id]")}}">{{$sibling['title']}}</a>
+                                <a href="{{url("$sibling[slug]")}}.html">{{$sibling['title']}}</a>
                             @endforeach
                         </p>
                     </div>
@@ -45,13 +42,11 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="side border mb-1">
-                            <h3>Brand</h3>
+                            <h3>{{$other['title']}}</h3>
                             <ul>
-                                <li><a href="#">Nike</a></li>
-                                <li><a href="#">Adidas</a></li>
-                                <li><a href="#">Merrel</a></li>
-                                <li><a href="#">Gucci</a></li>
-                                <li><a href="#">Skechers</a></li>
+                                @foreach ($other['children'] as $item)
+                                   <li><a href="{{url($item['slug'])}}.html">{{strtoupper($item['title'])}}</a></li>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
@@ -115,25 +110,6 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-sm-12">
-                        <div class="side border mb-1">
-                            <h3>Material</h3>
-                            <ul>
-                                <li><a href="#">Leather</a></li>
-                                <li><a href="#">Suede</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <div class="side border mb-1">
-                            <h3>Technologies</h3>
-                            <ul>
-                                <li><a href="#">BioBevel</a></li>
-                                <li><a href="#">Groove</a></li>
-                                <li><a href="#">FlexBevel</a></li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="col-lg-9 col-xl-9">
@@ -142,11 +118,11 @@
                         @foreach ($products as $item)
                             <div class="col-lg-4 mb-4 text-center">
                                 <div class="product-entry border">
-                                    <a href="{{url("detail/$item[id]")}}" class="prod-img">
+                                    <a href="{{url("$item[slug]")}}.html" class="prod-img">
                                         <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
                                     </a>
                                     <div class="desc">
-                                    <h2><a href="{{url("detail/$item[id]")}}">{{$item['title']}}</a></h2>
+                                    <h2><a href="{{url("$item[slug]")}}.html">{{$item['title']}}</a></h2>
                                     <span class="price">${{$item['price']}}</span>
                                     <button onclick="addToCart({{$item['id']}}, 1)" class="btn btn-primary btn-addtocart"><i class="icon-shopping-cart"></i></button>
                                     </div>

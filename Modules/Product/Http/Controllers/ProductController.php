@@ -12,6 +12,7 @@ use Modules\Product\Entities\Product;
 use Modules\Product\Entities\Category;
 use Modules\Product\Entities\Gallery;
 use Modules\Product\Entities\ProductGroup;
+use Modules\Product\Entities\Brand;
 
 class ProductController extends Controller
 {
@@ -25,8 +26,9 @@ class ProductController extends Controller
         $data = Product::paginate(10);
         $categories = Category::where('parent_id', '>', 0)->get();
         $groups = ProductGroup::all();
+        $brands = Brand::all();
         return view('product::products',
-        ['profile'=> Auth::user(), 'list'=>$data, 'name' => $name, 'categories'=>$categories, 'groups'=>$groups]);
+        ['profile'=> Auth::user(), 'list'=>$data, 'brands'=>$brands, 'name' => $name, 'categories'=>$categories, 'groups'=>$groups]);
     }
 
     /**1
@@ -53,7 +55,6 @@ class ProductController extends Controller
                 'title' => 'required',
                 'content' => 'required',
                 'category_id' => 'required|exists:categories,id',
-                'group_id' => 'nullable|exists:product_groups,id',
             ]);
     
             $status = false;
@@ -66,6 +67,8 @@ class ProductController extends Controller
             $model->price_compare = $request->price_compare;
             $model->category_id = $request->category_id;
             $model->group_id = $request->group_id;
+            $model->brand_id = $request->brand_id;
+            $model->slug = str_slug($request->title . ' ' .rand(0, 1000), '-');
             $status = $model->save();
 
             if(isset($request->gallery) && $status){
@@ -125,6 +128,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $request->request->add(['slug' => str_slug($request->title . ' ' .rand(0, 1000), '-')]); 
             $status = Product::where('id', $id)->update($request->except(['_token', 'gallery']));
             if($status){
                 $gallery = [];

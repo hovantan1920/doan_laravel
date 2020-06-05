@@ -17,20 +17,20 @@
       <div class="row">
         <div class="col-sm-12 text-left menu-1">
           <ul>
-          <li class="active"><a href="{{url('/')}}">Home</a></li>
+          <li id="nav-home"><a href="{{url('/')}}">Home</a></li>
           @foreach ($categories as $item)
-            <li class="has-dropdown">
-              <a>{{$item['title']}}</a>
+            <li id="nav-{{$item['slug']}}" class="has-dropdown">
+              <a href="{{url("$item[slug]")}}.html">{{$item['title']}}</a>
               @if (count($item['children']) != 0)
                 <ul class="dropdown">
                   @foreach ($item['children'] as $sub)
-                    <li><a href="{{url("category/$sub[id]")}}">{{$sub['title']}}</a></li>
+                    <li><a href="{{url("$sub[slug]")}}.html">{{$sub['title']}}</a></li>
                   @endforeach
                 </ul>
               @endif
             </li>
           @endforeach
-            <li class="cart"><a href="{{url('cart')}}"><i class="icon-shopping-cart"></i> Cart [<span id="span-cart">0</span>]</a></li>
+            <li class="cart"><a href="{{url('cart.html')}}"><i class="icon-shopping-cart"></i> Cart [<span id="span-cart">0</span>]</a></li>
           </ul>
         </div>
       </div>

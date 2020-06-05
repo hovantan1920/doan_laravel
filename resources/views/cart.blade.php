@@ -79,7 +79,7 @@
     });
     function related(products, quantities){
         $.ajax({
-            url: '{{url("cart/related")}}',
+            url: '{{url("cart.html/related")}}',
             method: 'GET',
             data: {
                 'products' : products,
@@ -95,7 +95,7 @@
     }
     function refresh(products, quantities){
         $.ajax({
-            url: '{{url("cart/products")}}',
+            url: '{{url("cart.html/products")}}',
             method: 'GET',
             data: {
                 'products' : products,
@@ -109,7 +109,7 @@
             }
         });
         $.ajax({
-            url: '{{url("cart/price-total")}}',
+            url: '{{url("cart.html/price-total")}}',
             method: 'GET',
             data: {
                 'products' : products,

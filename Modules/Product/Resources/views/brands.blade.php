@@ -132,9 +132,9 @@
             <table class="table table-data2">
                 <thead>
                     <tr>
-                        <th>serial</th>
+                        <th>logo</th>
                         <th>title</th>
-                        <th>descride</th>
+                        <th>description</th>
                         <th>country</th>
                         <th>updated</th>
                         <th>action</th>

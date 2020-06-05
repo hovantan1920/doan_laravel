@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\Mail;
 use App\ResetPassword;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasApiTokens;
 
     protected $table = 'users';
 

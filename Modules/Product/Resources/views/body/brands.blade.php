@@ -1,12 +1,10 @@
-<?php  
-    $i=0;
-?>
 @foreach($list as $brand)
-    <?php 
-        $i++;
-    ?>
     <tr class="tr-shadow">
-        <td>{{$i}}</td>
+        <td>
+            <div class="m-2 float-left" style="display:block">
+                <img class="rounded m-1" style="height: 50px; width: 100px" src="{{$brand['image_source']}}"/>
+            </div>
+        </td>
         <td>{{$brand['title']}}</td>
         <td>{{$brand['description']}}</td>
         <td>{{$brand['country']}}</td>
@@ -20,9 +18,11 @@
                 <button class="item" title="Delete" onclick="remove({{$brand['id']}})">
                     <i class="zmdi zmdi-delete"></i>
                 </button>
-                <button class="item" title="More">
-                    <i class="zmdi zmdi-more"></i>
-                </button>
+                @if (!empty($brand['slug']))
+                    <button class="item" title="More">
+                        <a href="{{url($brand['slug'])}}.html"><i class="zmdi zmdi-more"></i></a>
+                    </button>
+                @endif
             </div>
         </td>
     </tr>
