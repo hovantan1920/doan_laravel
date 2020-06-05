@@ -20,6 +20,7 @@ class BrandController extends Controller
             $data = Brand::get();
             return response()->json([
                 'status'=> 1,
+                'count'=>count($data),
                 'brands'=> BrandResource::collection($data)
             ]);
         } catch (\Throwable $th) {

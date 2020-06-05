@@ -21,10 +21,14 @@ class ProductResource extends Resource
             'price' => $this->price,
             'image_source' => $this->image_source,
             'price_compare' => $this->price_compare,
-            'category' => $this->category()->first(),
-            'group' => $this->group()->first(),
-            'brand' => $this->brand()->first(),
+            'category_id'=> $this->category_id,
+            'group_id'=> $this->group_id,
+            'brand_id'=> $this->brand_id,
             'gallery'=>$this->gallery()->get()
+        
+            // 'category' => $this->category()->first(),
+            // 'group' => $this->group()->first(),
+            // 'brand' => $this->brand()->first(),
         ];
     }
 }

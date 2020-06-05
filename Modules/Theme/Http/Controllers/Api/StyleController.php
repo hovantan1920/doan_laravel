@@ -1,14 +1,12 @@
 <?php
 
-namespace Modules\Product\Http\Controllers\Api;
+namespace Modules\Theme\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Product\Entities\ProductGroup;
-use Modules\Product\Transformers\ProductGroupResource;
 
-class ProductGroupController extends Controller
+class StyleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,19 +14,7 @@ class ProductGroupController extends Controller
      */
     public function index()
     {
-        try {
-            $data = ProductGroup::get();
-            return response()->json([
-                'status'=> 1,
-                'count'=>count($data),
-                'groups'=>ProductGroupResource::collection($data)
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status'=> 0,
-                'msg'=> $th->getMessage()
-            ]);
-        }
+        return view('theme::index');
     }
 
     /**
@@ -37,7 +23,7 @@ class ProductGroupController extends Controller
      */
     public function create()
     {
-        return view('product::create');
+        return view('theme::create');
     }
 
     /**
@@ -57,7 +43,7 @@ class ProductGroupController extends Controller
      */
     public function show($id)
     {
-        return view('product::show');
+        return view('theme::show');
     }
 
     /**
@@ -67,7 +53,7 @@ class ProductGroupController extends Controller
      */
     public function edit($id)
     {
-        return view('product::edit');
+        return view('theme::edit');
     }
 
     /**
