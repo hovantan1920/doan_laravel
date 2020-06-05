@@ -58,6 +58,7 @@ class CategoryController extends Controller
             $category->description = $request->description;
             $category->active = $request->active;
             $category->parent_id = $request->parent_id;
+            $category->slug = str_slug($request->title . ' ' .rand(0, 1000), '-');
             $status = $category->save();
             
             return response()->json(['success' => $status]);
@@ -107,6 +108,7 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $request->request->add(['slug' => str_slug($request->title . ' ' .rand(0, 1000), '-')]); 
             $status = Category::where('id', $id)->update($request->except(['_token']));
             return response()->json(['success' => $status, 'data'=> $request->all()]);
         } catch (\Throwable $th) {

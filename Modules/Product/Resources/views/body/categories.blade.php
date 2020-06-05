@@ -27,9 +27,11 @@
                 <button class="item" title="Delete" onclick="remove({{$cate['id']}})">
                     <i class="zmdi zmdi-delete"></i>
                 </button>
-                <button class="item" title="More">
-                    <i class="zmdi zmdi-more"></i>
-                </button>
+                @if (!empty($cate['slug']))
+                    <button class="item" title="More">
+                        <a href="{{url($cate['slug'])}}.html"><i class="zmdi zmdi-more"></i></a>
+                    </button>
+                @endif
             </div>
         </td>
     </tr>

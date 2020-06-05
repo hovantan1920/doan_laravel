@@ -33,9 +33,11 @@
                 <button class="item" title="Delete" onclick="remove({{$item['id']}})">
                     <i class="zmdi zmdi-delete"></i>
                 </button>
-                <button class="item" title="More">
-                    <i class="zmdi zmdi-more"></i>
-                </button>
+                @if (!empty($item['slug']))
+                    <button class="item" title="More">
+                        <a href="{{url($item['slug'])}}.html"><i class="zmdi zmdi-more"></i></a>
+                    </button>
+                @endif
             </div>
         </td>
     </tr>

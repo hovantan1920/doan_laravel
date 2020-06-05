@@ -53,6 +53,7 @@ class BrandController extends Controller
             $model->image_source = $request->image_source;
             $model->description = $request->description;
             $model->country = $request->country;
+            $model->slug = str_slug($request->title . ' ' .rand(0, 1000), '-');
             $status = $model->save();
             
             return response()->json(['success' => $status]);
@@ -102,6 +103,7 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $request->request->add(['slug' => str_slug($request->title . ' ' .rand(0, 1000), '-')]); 
             $status = Brand::where('id', $id)->update($request->except(['_token']));
             return response()->json(['success' => $status, 'data'=> $request->all()]);
         } catch (\Throwable $th) {

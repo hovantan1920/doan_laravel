@@ -68,6 +68,7 @@ class ProductController extends Controller
             $model->category_id = $request->category_id;
             $model->group_id = $request->group_id;
             $model->brand_id = $request->brand_id;
+            $model->slug = str_slug($request->title . ' ' .rand(0, 1000), '-');
             $status = $model->save();
 
             if(isset($request->gallery) && $status){
@@ -127,6 +128,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $request->request->add(['slug' => str_slug($request->title . ' ' .rand(0, 1000), '-')]); 
             $status = Product::where('id', $id)->update($request->except(['_token', 'gallery']));
             if($status){
                 $gallery = [];

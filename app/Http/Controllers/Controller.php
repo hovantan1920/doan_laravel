@@ -24,8 +24,13 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function __construct(){
+        $this->pageName = 'FASHION Interesting';
         Category::fixTree();
         $this->categories = Category::get()->toTree();
+        \View::share([
+            'categories'=>$this->categories,
+            'pageName'=> $this->pageName . ' - ' . $this->pageName
+        ]);
     }
 
     public function index(){
@@ -38,26 +43,46 @@ class Controller extends BaseController
         }
         
         return response()->view('index', [
-            'categories'=>$this->categories, 
             'banners'=>$banners,
             'groups'=>$groups,
             'collections'=>$collections,
         ]);
     }
 
-    public function collection($slugParent){
+    public function pages($slug){
 
-        $categorySlug = $this->getSlug(Category::where('slug', $slugParent)->first());
-        $groupSlug = $this->getSlug(ProductGroup::where('slug', $slugParent)->first());
-        $brandSlug = $this->getSlug(Brand::where('slug', $slugParent)->first());
+        $category = Category::where('slug', $slug)->first();
+        $group = ProductGroup::where('slug', $slug)->first();
+        $brand = Brand::where('slug', $slug)->first();
+        $product = null;
 
-        switch ($slugParent) {
+        $categorySlug = $this->getSlug($category);
+        $groupSlug = $this->getSlug($group);
+        $brandSlug = $this->getSlug($brand);
+        $productSlug = null;
+
+        if (empty($category) && empty($group) && empty($brand)) {
+            $product = Product::where('slug', $slug)->first();
+            $productSlug = $this->getSlug($product);
+        }
+
+        switch ($slug) {
             case $categorySlug:
-                return 'cate';
+                return $this->viewCategory($category);
+                break;
+            case $groupSlug:
+                return $this->viewGroup($group);
+                break;
+            case $brandSlug:
+                return $this->viewBrand($brand);
+                break;
+
+            case $productSlug:
+                return $this->viewProduct($product);
                 break;
             
             default:
-                return $categorySlug;
+                return view('error');
                 break;
         }
     }
@@ -66,47 +91,73 @@ class Controller extends BaseController
         return optional($model)->slug;
     }
 
-    private function byCategory($id){
-        $category = Category::find($id);
-        $siblings = $category->siblings()->get();
-        $parent = Category::ancestorsOf($id)->first();
-        $children = Category::descendantsOf($id);
-        $products = Product::where('category_id', $id)
-            ->limit(Config('product.limit'))->get();
-
-        foreach ($children as $child) {
-            # code...
-        }
-        
-        // return response()->json([
-        //     'id'=>$id,
-        //     'sib'=>$siblings,
-        //     'parent'=>$parent,
-        //     'cate'=>$category
-        // ]);
-        return View('bycategory', 
+    private function viewBrand($brand){
+        $id = $brand->id;
+        $siblings = Brand::where('id', '!=',  $id)->get();
+        $other = ['title'=> 'Collection', 'children'=>ProductGroup::get()];
+        $products = Product::where('brand_id', $id)
+            ->paginate(Config('product.limit'));
+        return View('collection', 
             [
-                'categories'=>$this-categories, 
-                'category'=>$category,
+                'pageName'=> $this->pageName . ' - ' . $brand->title,
+                'object'=>$brand,
+                'other' => $other,
                 'siblings'=>$siblings,
-                'parent' =>$parent,
                 'products'=>$products,
             ]);
     }
 
-    public function detail($id){
-        Category::fixTree();
-        $categories = Category::get()->toTree();
-        $product = Product::find($id);
+    private function viewGroup($group){
+        $id = $group->id;
+        $siblings = ProductGroup::where('id', '!=',  $id)->get();
+        $other = ['title'=> 'Brand', 'children'=>Brand::get()];
+        $products = Product::where('group_id', $id)
+            ->paginate(Config('product.limit'));
+        return View('collection', 
+            [
+                'pageName'=> $this->pageName . ' - ' . $group->title,
+                'object'=>$group,
+                'other' => $other,
+                'siblings'=>$siblings,
+                'products'=>$products,
+            ]);
+    }
+
+    private function viewCategory($category){
+        $id = $category->id;
+        $siblings = $category->siblings()->get();
+        $children = Category::descendantsOf($id);
+        $other = ['title'=> 'Brand', 'children'=>Brand::get()];
+        $arr = [$id];
+        foreach ($children as $child) {
+            array_push($arr, $child->id);
+        }
+        $products = Product::whereIn('category_id', $arr)
+            ->paginate(Config('product.limit'));
+
+        $active = '';
+        $parent = Category::where('id', $category->parent_id)->first();
+        if(empty($parent)){
+            $active = $category->slug;
+        }
+        else
+            $active = $parent->slug;
+
+        return View('collection', 
+            [
+                'active' => $active,
+                'pageName'=> $this->pageName . ' - ' . $category->title,
+                'object'=>$category,
+                'other' => $other,
+                'siblings'=>$siblings,
+                'products'=>$products,
+            ]);
+    }
+
+    private function viewProduct($product){
         $gallery = $product->gallery()->get();
-        // $value = Cookie::get('name');
-        // return response()->json([
-        //     'id'=>$id,
-        //     'val'=>$value
-        // ]);
-        
         return response()->view('detail', [
-            'categories'=>$categories, 
+            'pageName'=> $this->pageName . ' - ' . $product->title,
             'product'=>$product,
             'gallery'=>$gallery
         ]);;
