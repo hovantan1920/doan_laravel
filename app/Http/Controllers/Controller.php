@@ -164,11 +164,7 @@ class Controller extends BaseController
     }
 
     public function cart(){
-        Category::fixTree();
-        $categories = Category::get()->toTree();
-        return response()->view('cart', [
-            'categories'=>$categories, 
-        ]);;
+        return response()->view('cart', ['active'=>'cart']);;
     }
 
     public function cartProducts(Request $request){
