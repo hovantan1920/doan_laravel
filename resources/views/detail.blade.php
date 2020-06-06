@@ -21,7 +21,7 @@
                         <div class="item">
                             <div class="product-entry border">
                                 <a href="#" class="prod-img">
-                                    <img src="{{$product['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                    <img src="{{$product['image_source']}}" class="img-fluid" alt="{{$product['title']}}">
                                 </a>
                             </div>
                         </div>
@@ -30,7 +30,7 @@
                                 <div class="item">
                                     <div class="product-entry border">
                                         <a href="#" class="prod-img">
-                                            <img src="{{$item['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                            <img src="{{$item['image_source']}}" class="img-fluid" alt="{{$product['title']}}">
                                         </a>
                                     </div>
                                 </div>
@@ -39,7 +39,7 @@
                             <div class="item">
                                 <div class="product-entry border">
                                     <a href="#" class="prod-img">
-                                        <img src="{{$product['image_source']}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                        <img src="{{$product['image_source']}}" class="img-fluid" alt="{{$product['title']}}">
                                     </a>
                                 </div>
                             </div>

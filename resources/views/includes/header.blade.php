@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-7 col-md-9">
-          <div id="colorlib-logo"><a href="{{url('/')}}">Fashion</a></div>
+          <div id="colorlib-logo"><a href="{{url('/')}}">F-Interesting</a></div>
         </div>
         <div class="col-sm-5 col-md-3">
               <form action="#" class="search-wrap">
@@ -30,7 +30,7 @@
               @endif
             </li>
           @endforeach
-            <li class="cart"><a href="{{url('cart.html')}}"><i class="icon-shopping-cart"></i> Cart [<span id="span-cart">0</span>]</a></li>
+            <li id="nav-cart" class="cart"><a href="{{url('cart.html')}}"><i class="icon-shopping-cart"></i> Cart [<span id="span-cart">0</span>]</a></li>
           </ul>
         </div>
       </div>
