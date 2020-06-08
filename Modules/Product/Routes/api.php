@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix' => 'products'], function () {
-    Route::get('search', 'API\ProductController@search');
+    Route::get('/', 'API\ProductController@search');
     Route::get('get', 'API\ProductController@get');
     
     // Route::get('byCategory', 'API\ProductController@byCategory');

@@ -16,7 +16,7 @@ class ProductController extends Controller
             $model = Product::findOrFail($request->id);
             return response()->json([
                 'status'=> 1,
-                'product'=> new ProductResource($model)
+                'data'=> new ProductResource($model)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -59,10 +59,8 @@ class ProductController extends Controller
             $products = $products->offset($offset)->limit($limit)->get();
             return response()->json([
                 'status'=>1,
-                'data'=>[
-                    'count'=>count($products),
-                    'products'=> ProductResource::collection($products),
-                ]
+                'count'=>count($products),
+                'data'=>ProductResource::collection($products),
             ]);
         } catch (\Throwable $th) {
             return response()->json([

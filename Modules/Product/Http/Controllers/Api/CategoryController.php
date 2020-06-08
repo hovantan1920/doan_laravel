@@ -22,7 +22,7 @@ class CategoryController extends Controller
             return response()->json([
                 'status'=> 1,
                 'count'=>count($categories),
-                'categories'=>$categories
+                'data'=>$categories
             ]);
         } catch (\Throwable $th) {
             return response()->json([

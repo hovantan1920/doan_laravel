@@ -22,7 +22,7 @@ class BannerController extends Controller
             return response()->json([
                 'status'=> 1,
                 'count'=>count($data),
-                'banners'=> $data
+                'data'=> $data
                 // 'banners'=> BannerResource::collection($data)
             ]);
         } catch (\Throwable $th) {
