@@ -9,6 +9,10 @@ class Product extends Model
     protected $table = "products";
     protected $fillable = ['id', 'title', 'content', 'price', 'price_compare', 'category_id', 'image_source', 'group_id', 'slug'];
     
+    public function related(){
+        return Product::where("category_id", $this->category_id)->orWhere("group_id", $this->group_id)->get();
+    }
+
     public function category()
     {
         return $this->belongsTo('Modules\Product\Entities\Category');

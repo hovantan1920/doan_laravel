@@ -11,6 +11,24 @@ use Modules\Product\Entities\Category;
 
 class ProductController extends Controller
 {
+    public function gets(Request $request){
+        try {
+            $ids = array_map('intval', explode(',', $request->ids));
+            $data = Product::whereIn("id", $ids)->get();
+            return response()->json([
+                'status'=>1,
+                'ids'=>$ids,
+                'count'=>count($data),
+                'data'=>$data
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
+    }
+
     public function get(Request $request){
         try {
             $model = Product::findOrFail($request->id);
