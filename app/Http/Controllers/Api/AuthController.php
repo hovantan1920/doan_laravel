@@ -5,101 +5,79 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth; 
 use GuzzleHttp\Client;
 
 use App\User;
 use App\SocialAccount;
+use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
-    // public function loginFacebook(Request $request){
-    //     $access_token = $request->get('access_token');
-    //     if(!$access_token){
-    //         return response()->json([
-    //             'status'=>0,
-    //             'msg'=> 'access_token is require'
-    //         ]);
-    //     }
-    //     $fb = new Facebook([
-    //         'app_id' => config('services.facebook.app_id'),
-    //         'app_secret' => config('services.facebook.app_secret'),
-    //     ]);
-    //     try {
-    //         $response = $fb->get('/me?fields=id,name,email,link,birthday', $facebook['access_token']); 
-    //         $profile = $response->getGraphUser();
-    //         if (!$profile || !isset($profile['id'])) { 
-    //             return $this->responseErrors(config('code.user.login_facebook_failed'), trans('messages.user.login_facebook_failed'));
-    //         }
-    
-    //         $email = $profile['email'] ?? null;
-    //         $social = SocialAccount::where('provider_user_id', $profile['id'])->where('provider', 'facebook')->first();
-    //         if ($social) {
-    //             $user = $social->user;
-    //         } else {
-    //             $user = new User();
-    //             $user->password = bcrypt($profile['name']);
-    //             $user->email = $profile['email'];
-    //             $user->name = $profile['name'];
-    //             $user->save();
-    //             $user->socialNetwork()->create([
-    //                 'provider_user_id' => $data->id,
-    //                 'provider' => 'google',
-    //             ]);
-    //         }
-    
-    //         $user->assignRole(config('settings.roles.customer'));
-    //         $tokenResult = $user->createToken('Personal Access Token');
-    //         $token = $tokenResult->accessToken;
-    
-    //         return response()->json([
-    //             'status'=>1,
-    //             'msg'=>'Login success',
-    //             'data'=>[
-    //                 'token'=>$token,
-    //                 'user'=>new UserResource($user)
-    //             ]
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status'=>0,
-    //             'msg'=>'Error when login with google ' . $e 
-    //         ]);
-    //     }
-    // }
-
-    public function loginGoogle(Request $request)
-    {
+    public function loginFacebook(Request $request){
         $access_token = $request->get('access_token');
-        if (!$access_token) {
+        if(!$access_token){
             return response()->json([
                 'status'=>0,
-                'msg'=>'access token is require',
+                'msg'=> 'access_token is require'
             ]);
         }
 
-        try {
-            
-            $client = new Client();
-            $body = $client->get(Config('api.url_endpoint_infoGoogle') . $access_token)->getBody(); 
-            $data = json_decode($body->getContents());
+        try {    
+            $data = $request->all();
+            $social = SocialAccount::where('provider_id', $data->id)->where('provider', 'facebook')->first();
+            if ($social) {
+                $user = $social->user;
+            } else {
+                // $user = new User();
+                // $user->password = bcrypt($profile['name']);
+                // $user->email = $profile['email'];
+                // $user->name = $profile['name'];
+                // $user->save();
+                // $user->socialNetwork()->create([
+                //     'provider_user_id' => $data->id,
+                //     'provider' => 'google',
+                // ]);
+            }
+    
+            // $user->assignRole(config('settings.roles.customer'));
+            // $tokenResult = $user->createToken('Personal Access Token');
+            // $token = $tokenResult->accessToken;
+    
+            // return response()->json([
+            //     'status'=>1,
+            //     'msg'=>'Login success',
+            //     'data'=>[
+            //         'token'=>$token,
+            //         'user'=>new UserResource($user)
+            //     ]
+            // ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'=>0,
+                'msg'=>'Error when login with facebook ' . $e->getMessage() 
+            ]);
+        }
+    }
 
-            $social = SocialAccount::where('provider_user_id', $data->id)->where('provider', 'google')->first();
+    public function loginGoogle(Request $request)
+    {
+        try {
+            $social = SocialAccount::where('provider_id', $request->id)->where('provider', 'google')->first();
             if ($social) {
                 $user = $social->user;
             } else {
                 $user = new User();
-                $user->email = $data->email;
-                $user->name = $data->name;
-                $user->password = bcrypt($data->name);
+                $user->email = $request->email;
+                $user->name = $request->name;
+                $user->password = bcrypt($request->id);
+                $user->avatar = $request->picture;
+                $user->roles_id = (config('settings.roles.customer'));
                 $user->save();
                 $user->socialNetwork()->create([
-                    'provider_user_id' => $data->id,
+                    'provider_id' => $request->id,
                     'provider' => 'google',
                 ]);
-                $user->profile()->create([
-                    'avatar'=>$data->picture
-                ]);
-                $user->assignRole(config('settings.roles.customer'));
             }
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->accessToken;
@@ -107,15 +85,35 @@ class AuthController extends Controller
             return response()->json([
                 'status'=>1,
                 'msg'=>'Login success',
-                'data'=>[
-                    'token'=>$token,
-                    'user'=>new UserResource($user)
-                ]
+                'data'=>(new UserResource($user))->pushToken($token)
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status'=>0,
-                'msg'=>'Error when login with google ' . $e 
+                'msg'=>'Error when login with google ' . $e ->getMessage()
+            ]);
+        }
+    }
+    public function profile(Request $request)
+    {
+        try {
+            $user = Auth::user(); 
+            if($user == null)
+                return response()->json([
+                    'status'=>0,
+                    'msg'=>"Unauthorized",
+                ]);
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->accessToken;
+            return response()->json([
+                'status'=>1,
+                'msg'=>'Success',
+                'data'=>(new UserResource($user))->pushToken($token)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'=>0,
+                'msg'=>'Error when login with google ' . $e ->getMessage()
             ]);
         }
     }

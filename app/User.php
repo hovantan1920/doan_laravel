@@ -46,6 +46,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    function socialNetwork(){
+        return $this->hasOne('App\SocialAccount');
+    }
+
     function deleteRequestResetPass($email){
         ResetPassword::where('email', '=', $email)->delete();
     }

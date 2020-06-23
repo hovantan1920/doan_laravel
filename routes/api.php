@@ -13,10 +13,10 @@ use Illuminate\Http\Request;
 |
 */
 Route::group(['prefix' => 'auth'], function () {
+
     Route::post('google', 'API\AuthController@loginGoogle');
-    // Route::post('loginFacebook', 'API\AuthController@loginFacebook');
-    
-    // Route::group(['middleware' => 'auth:api'], function(){
-    //     Route::post('updateProfile', 'API\AuthController@updateProfile');
-    // });
+
+    Route::group(['middleware' => 'auth:api'], function(){
+        Route::post('me', 'API\AuthController@profile');
+    });
 });
