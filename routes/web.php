@@ -18,7 +18,12 @@ Route::group(['prefix' => '/cart.html'], function () {
     Route::get('products', 'Controller@cartProducts');
     Route::get('price-total', 'Controller@cartPriceTotal');
     Route::get('related', 'Controller@cartRelated');
+    Route::get('remove', 'Controller@carRemove');
+    Route::get('complete', 'Controller@complete');
 });
+
+Route::get('/cart-checkout.html', 'Controller@cartCheckout');
+Route::get('/cart-complete.html', 'Controller@cartComplete');
 
 Route::get('/{slug}.html', 'Controller@pages');
 

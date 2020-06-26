@@ -14,6 +14,8 @@
         @yield('script')
         <script>
             $(document).ready(function(){
+                // Cookies.remove('cart-products');
+                // Cookies.remove('cart-quantities');
                 getCart();
                 @if (empty($active))
                     $("#nav-home").addClass("active");

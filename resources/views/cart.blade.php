@@ -49,6 +49,9 @@
                                 <div class="total" id="cart-price">
                                     
                                 </div>
+                                <p class="mt-4">
+                                    <a href="{{url('cart-checkout.html')}}"class="btn btn-primary btn-outline-primary">Checkout</a>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -93,6 +96,46 @@
             }
         });
     }
+    function removeCart(id){
+
+        var products = JSON.parse(Cookies.get('cart-products') ?? "[]");
+        var quantities = JSON.parse(Cookies.get('cart-quantities') ?? "[]");
+        var index = products.indexOf(id);
+
+        if (index > -1) {
+            products.splice(index, 1);
+            quantities.splice(index, 1);
+        }
+        
+        Cookies.set('cart-products', "[" + products + "]", { expires: 60});
+        Cookies.set('cart-quantities', "[" + quantities + "]", { expires: 60});
+        $('#span-cart').text(products.length);
+
+        refresh(products, quantities);
+        related(products, quantities);
+        return false;
+    }
+    // function changeCart(id, quantity) {
+    //     if(quantity == 0){
+    //         removeCart(id);
+    //         return;
+    //     }
+
+    //     var products = JSON.parse(Cookies.get('cart-products') ?? "[]");
+    //     var quantities = JSON.parse(Cookies.get('cart-quantities') ?? "[]");
+    //     var index = products.indexOf(id);
+
+    //     if (index > -1) {
+    //         quantities[index] = quantity;
+    //     }
+        
+    //     Cookies.set('cart-products', "[" + products + "]", { expires: 60});
+    //     Cookies.set('cart-quantities', "[" + quantities + "]", { expires: 60});
+
+    //     refresh(products, quantities);
+    //     related(products, quantities);
+    //     return false;
+    // }
     function refresh(products, quantities){
         $.ajax({
             url: '{{url("cart.html/products")}}',

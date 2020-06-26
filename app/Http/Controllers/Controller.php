@@ -9,6 +9,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
+use App\Mail\CompleteOrder;
+use Illuminate\Support\Facades\Mail;
 
 //Auth
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +20,10 @@ use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductGroup;
 use Modules\Product\Entities\Brand;
 use Modules\Theme\Entities\Banner;
+use Modules\Booking\Entities\MethodShip;
+use Modules\Booking\Entities\MethodPayment;
+use Modules\Booking\Entities\Order;
+use Modules\Booking\Entities\OrderDetail;
 
 class Controller extends BaseController
 {
@@ -167,6 +173,48 @@ class Controller extends BaseController
         return response()->view('cart', ['active'=>'cart']);;
     }
 
+    public function cartCheckout(){
+        return response()->view('cart-checkout', ['active'=>'cart']);;
+    }
+
+    public function cartComplete(Request $request){
+        $name = $request->name;
+        $address = $request->address;
+        $email = $request->email;
+        $note = $request->note;
+        $phone = $request->phone;
+        $products = array_map('intval', explode(',', $request->products));
+        $quantities = array_map('intval', explode(',', $request->quantities));
+        
+        $order = new Order();
+        $order->name = $name;
+        $order->phone = $phone;
+        $order->email = $email;
+        $order->address = $address;
+        $order->note = $note;
+        $order->ship_id = 1;
+        $order->payment_id = 1;
+
+        $order->save();
+
+        $id = $order->id;
+        $details = [];
+        for ($i=0; $i < count($products) ; $i++) { 
+            array_push($details, [
+                'order_id' => $id,
+                'product_id' => $products[$i],
+                'quantity' => $quantities[$i]
+            ]);
+        }
+        OrderDetail::insert($details);
+
+        return redirect('/cart.html/complete');
+    }
+
+    public function complete(){
+        return response()->view('cart-complete', ['active'=>'cart']);
+    }
+
     public function cartProducts(Request $request){
         if(!isset($request->products) || !isset($request->quantities))
             return;
@@ -204,5 +252,12 @@ class Controller extends BaseController
         return response()->view('contents.cart-related', [
             'products'=>$products
         ]);;
+    }
+    public function carRemove(Request $request){
+        $id = (int) $request->id;
+        Product::delete($id);
+        return response()->json([
+            'status'=> 1
+        ], 200);
     }
 }
