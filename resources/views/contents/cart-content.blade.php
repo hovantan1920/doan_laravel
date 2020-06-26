@@ -41,7 +41,7 @@
         </div>
         <div class="one-eight text-center">
             <div class="display-tc">
-                <a href="#" class="closed"></a>
+                <a onclick="removeCart({{$products[$i]['id']}})" class="closed"></a>
             </div>
         </div>
     </div>

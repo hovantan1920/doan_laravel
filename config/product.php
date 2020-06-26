@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'related'=>8,
+    'related'=>4,
     'limit'=>12,
     'groups'=>[
         'seller'=>[
