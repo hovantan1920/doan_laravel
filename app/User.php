@@ -46,6 +46,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function collection()
+    {
+        return $this->hasMany('Modules\Product\Entities\Product');
+    }
+
     function deleteRequestResetPass($email){
         ResetPassword::where('email', '=', $email)->delete();
     }
