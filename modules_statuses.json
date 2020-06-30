@@ -5,5 +5,7 @@
     "AboutProduct": true,
     "Migration": true,
     "CreateGalleryTable": true,
-    "Theme": true
+    "Theme": true,
+    "Model": true,
+    "ProductCollection": true
 }

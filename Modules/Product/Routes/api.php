@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::group(['prefix' => 'collection'], function () {
+    Route::group(['middleware' => 'auth:api'], function(){
+        Route::post('/make', 'API\ProductCollectionController@make');
+        Route::post('/get', 'API\ProductCollectionController@index');
+        Route::post('/check', 'API\ProductCollectionController@check');
+    });
+});
+
 Route::group(['prefix' => 'products'], function () {
     Route::get('/', 'API\ProductController@search');
     Route::get('get', 'API\ProductController@get');

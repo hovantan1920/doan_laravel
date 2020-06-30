@@ -13,6 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::group(['prefix' => 'order'], function () {
+    Route::group(['middleware' => 'auth:api'], function(){
+        Route::post('/create', 'API\OrderController@store');
+        Route::post('/get', 'API\OrderController@detail');
+    });
+});
+
 Route::middleware('auth:api')->get('/booking', function (Request $request) {
     return $request->user();
 });

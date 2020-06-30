@@ -46,8 +46,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    function socialNetwork(){
+    function socialNetwork()
+    {
         return $this->hasOne('App\SocialAccount');
+    }
+
+    public function productCollection()
+    {
+        return $this->hasMany('Modules\Product\Entities\ProductCollection');
     }
 
     function deleteRequestResetPass($email){
