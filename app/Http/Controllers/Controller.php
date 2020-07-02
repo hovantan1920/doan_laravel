@@ -185,6 +185,11 @@ class Controller extends BaseController
         $phone = $request->phone;
         $products = array_map('intval', explode(',', $request->products));
         $quantities = array_map('intval', explode(',', $request->quantities));
+
+        $total = 0;
+        for ($i=0; $i < count($products); $i++) { 
+            $total += Product::find($products[$i])->price * $quantities[$i];
+        }
         
         $order = new Order();
         $order->name = $name;
@@ -193,6 +198,8 @@ class Controller extends BaseController
         $order->address = $address;
         $order->note = $note;
         $order->ship_id = 1;
+        $order->total = $total;
+        $order->status = 0;
         $order->payment_id = 1;
 
         $order->save();
