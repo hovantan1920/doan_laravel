@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'order'], function () {
     Route::group(['middleware' => 'auth:api'], function(){
+        Route::post('', 'API\OrderController@index');
         Route::post('/create', 'API\OrderController@store');
         Route::post('/get', 'API\OrderController@detail');
     });

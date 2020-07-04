@@ -72,7 +72,7 @@ class AuthController extends Controller
                 $user->name = $request->name;
                 $user->password = bcrypt($request->id);
                 $user->avatar = $request->picture;
-                $user->roles_id = (config('settings.roles.customer'));
+                $user->roles_id = (config('settings.roles.customer') ?? 3);
                 $user->save();
                 $user->socialNetwork()->create([
                     'provider_id' => $request->id,

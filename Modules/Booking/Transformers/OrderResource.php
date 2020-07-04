@@ -3,6 +3,7 @@
 namespace Modules\Booking\Transformers;
 
 use Illuminate\Http\Resources\Json\Resource;
+use Modules\Booking\Transformers\OrderDetailResource;
 
 class OrderResource extends Resource
 {
@@ -26,7 +27,7 @@ class OrderResource extends Resource
             'discount' => $this->discount,
             'status'=>$this->status,
             'user_id'=> $this->user_id,
-            'detail' => $this->detail()->get()
+            'detail' => OrderDetailResource::collection($this->detail()->get())
         ];
     }
 }

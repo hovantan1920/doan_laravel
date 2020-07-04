@@ -17,9 +17,25 @@ class OrderController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('booking::index');
+        try { 
+
+            $offset = $request->offset ?? 0;
+            $limit = $request->offset ?? 10;
+
+            $user = Auth::user();           
+            $order = Order::where('user_id', $user->id)->offset($offset)->limit($limit)->get();
+            return response()->json([
+                'status'=> 1,
+                'data'=> OrderResource::collection($order)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
     }
 
     public function detail(Request $request){
@@ -54,7 +70,10 @@ class OrderController extends Controller
             
             $total = 0;
             for ($i=0; $i < count($products); $i++) { 
-                $total += Product::find($products[$i])->price * $quantities[$i];
+                $model = Product::find($products[$i]);
+                if($model != null){
+                    $total += $model->price * $quantities[$i];
+                }
             }
             
             $order = new Order();
@@ -62,7 +81,7 @@ class OrderController extends Controller
             $order->phone = $phone;
             $order->email = $user->email;
             $order->address = $address;
-            $order->note = $note;
+            $order->note = $note ?? "Nothings";
             $order->ship_id = 1;
             $order->total = $total;
             $order->status = 0;
@@ -83,7 +102,8 @@ class OrderController extends Controller
             OrderDetail::insert($details);
             return response()->json([
                 'status'=> 1,
-                'data'=> new OrderResource($order)
+                'data'=> new OrderResource($order),
+                'msg' => 'success'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
