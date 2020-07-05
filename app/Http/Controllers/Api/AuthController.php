@@ -98,11 +98,6 @@ class AuthController extends Controller
     {
         try {
             $user = Auth::user(); 
-            if($user == null)
-                return response()->json([
-                    'status'=>0,
-                    'msg'=>"Unauthorized",
-                ]);
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->accessToken;
             return response()->json([
