@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
-use App\Mail\CompleteOrder;
+use App\Mail\MailBookingNotify;
 use Illuminate\Support\Facades\Mail;
 
 //Auth
@@ -24,6 +24,7 @@ use Modules\Booking\Entities\MethodShip;
 use Modules\Booking\Entities\MethodPayment;
 use Modules\Booking\Entities\Order;
 use Modules\Booking\Entities\OrderDetail;
+use App\User;
 
 class Controller extends BaseController
 {
@@ -186,6 +187,16 @@ class Controller extends BaseController
         $products = array_map('intval', explode(',', $request->products));
         $quantities = array_map('intval', explode(',', $request->quantities));
 
+        $user = User::where('email', $email)->first();
+        if($user == null){
+            $user                 = new User();
+            $user->name           = $name;
+            $user->email          = $email;
+            $user->password       = bcrypt($email);
+            $user->roles_id       = 3;
+            $user->save();
+        }
+
         $total = 0;
         for ($i=0; $i < count($products); $i++) { 
             $total += Product::find($products[$i])->price * $quantities[$i];
@@ -215,6 +226,10 @@ class Controller extends BaseController
         }
         OrderDetail::insert($details);
 
+        Mail::to($user)->send(new MailBookingNotify($user));
+        if (Mail::failures()) {
+            return view('error');
+        }
         return redirect('/cart.html/complete');
     }
 
