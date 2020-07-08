@@ -10,6 +10,8 @@ use Modules\Booking\Entities\Order;
 use Modules\Booking\Entities\OrderDetail;
 use Modules\Product\Entities\Product;
 use Modules\Booking\Transformers\OrderResource;
+use App\Mail\MailBookingNotify;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -100,6 +102,13 @@ class OrderController extends Controller
                 ]);
             }
             OrderDetail::insert($details);
+            Mail::to($user)->send(new MailBookingNotify($user));
+            if (Mail::failures()) {
+                return response()->json([
+                    'status'=> 0,
+                    'msg'=> 'Send mail error.'
+                ]);
+            }
             return response()->json([
                 'status'=> 1,
                 'data'=> new OrderResource($order),
