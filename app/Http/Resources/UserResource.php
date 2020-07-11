@@ -26,6 +26,8 @@ class UserResource extends JsonResource
             'name'=>$this->name,
             'avatar'=>$this->avatar,
             'email'=>$this->email,
+            'birthday'=>$this->birthday,
+            'gender'=>$this->gender,
             'token'=>$this->token
         ];
     }

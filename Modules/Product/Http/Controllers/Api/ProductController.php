@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Product\Transformers\ProductResource;
+use Modules\Product\Transformers\ProductSuggestResource;
 use Modules\Product\Entities\Product;
 use Modules\Product\Entities\Category;
 
@@ -41,6 +42,36 @@ class ProductController extends Controller
                 'status'=> 0,
                 'msg'=> $th->getMessage()
             ]);
+        }
+    }
+
+    public function suggest(Request $request){
+        try {
+            $keyword = $request->keyword;
+            $offset = (int) $request->offset;
+            $limit = (int) $request->limit;
+            if($limit == 0)
+                $limit = 5; 
+            if (!empty($keyword)) {
+                $products = Product::where('title', 'LIKE', "%$keyword%")
+                    ->orWhere('content', 'LIKE', "%$keyword%");
+                $products = $products->offset($offset)->limit($limit)->get();
+                return response()->json([
+                    'status'=>1,
+                    'count'=>count($products),
+                    'data'=>ProductSuggestResource::collection($products),
+                ]);
+            }
+            else 
+                return response()->json([
+                    'status'=>1,
+                    'msg'=>'Keyword empty.'
+                ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=>0,
+                'msg'=>'Error: '.$th,
+            ]); 
         }
     }
 

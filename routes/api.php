@@ -18,5 +18,6 @@ Route::group(['prefix' => 'auth'], function () {
 
     Route::group(['middleware' => 'auth:api'], function(){
         Route::post('me', 'API\AuthController@profile');
+        Route::post('me/picture', 'API\AuthController@uploadAvatar');
     });
 });

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth; 
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 use App\User;
 use App\SocialAccount;
@@ -67,12 +68,13 @@ class AuthController extends Controller
             if ($social) {
                 $user = $social->user;
             } else {
-                $user = new User();
+                $user = new User(); 
                 $user->email = $request->email;
                 $user->name = $request->name;
                 $user->password = bcrypt($request->id);
                 $user->avatar = $request->picture;
                 $user->roles_id = (config('settings.roles.customer') ?? 3);
+                $user->active = 1;
                 $user->save();
                 $user->socialNetwork()->create([
                     'provider_id' => $request->id,
@@ -98,6 +100,11 @@ class AuthController extends Controller
     {
         try {
             $user = Auth::user(); 
+            $user->name = $request->name ?? $user->name;
+            $user->email = $request->email ?? $user->email;
+            $user->birthday = $request->birthday ?? $user->birthday;
+            $user->gender = $request->gender ?? $user->gender;
+            $user->save();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->accessToken;
             return response()->json([
@@ -108,7 +115,44 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status'=>0,
-                'msg'=>'Error when login with google ' . $e ->getMessage()
+                'msg'=>'error: ' . $e ->getMessage()
+            ]);
+        }
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        try {
+            $user = Auth::user(); 
+            if($request->hasFile('picture')) {
+                $allowedfileExtension=['jpg','png'];
+                $file = $request->file('picture');
+                $extension = $file->getClientOriginalExtension();
+                $check=in_array($extension,$allowedfileExtension);
+                if($check) {
+                    $filename = $file->storeAs('/public/images/avatars', 
+                    Carbon::now()->format('d-m-Y') . '-avatar-' . rand(99999,999999999).'.'.$extension);
+                    $filename = str_replace("public","storage",$filename);
+                    $user->avatar = $filename;
+                } else {
+                    return response()->json([
+                        'status'=>0,
+                        'msg'=>'The avatar needs an extension of jpg or png'
+                    ]);
+                }
+            }
+            $user->save();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->accessToken;
+            return response()->json([
+                'status'=>1,
+                'msg'=>'Success',
+                'data'=>(new UserResource($user))->pushToken($token)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'=>0,
+                'msg'=>'error: ' . $e ->getMessage()
             ]);
         }
     }
