@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('coupons', 'API\CouponController@index');
 Route::group(['prefix' => 'order'], function () {
     Route::group(['middleware' => 'auth:api'], function(){
         Route::post('', 'API\OrderController@index');
