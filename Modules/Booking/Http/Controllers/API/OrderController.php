@@ -7,11 +7,13 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Booking\Entities\Order;
+use Modules\Booking\Entities\Coupon;
 use Modules\Booking\Entities\OrderDetail;
 use Modules\Product\Entities\Product;
 use Modules\Booking\Transformers\OrderResource;
 use App\Mail\MailBookingNotify;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -56,6 +58,30 @@ class OrderController extends Controller
     }
 
     /**
+     * Return discount follow code and value bill.
+     * @param code, value
+     * @return int
+     */
+    private function discount($code, $value){
+        try {
+            if(strlen($code) >= 4){
+                $current = Carbon::now()->format('d-m-Y');
+                $coupon = Coupon::where("expired", ">", $current)->where("code", $code)->firstOrFail();
+                if($coupon != null){
+                    if($coupon->type == 1 && $value >= $coupon->condition && $coupon->count > 0)
+                        return $coupon->discount;
+                    if($coupon->type == 2 && $value >= $coupon->condition && $coupon->count > 0)
+                        return (($coupon->discount)/100)*$value;
+                }
+            }
+        } catch (\Throwable $th) {
+            return 0;
+        }
+        
+        return 0;
+    }
+
+    /**
      * Store a newly created resource in storage.
      * @param Request $request
      * @return Response
@@ -67,6 +93,7 @@ class OrderController extends Controller
             $address = $request->address;
             $note = $request->note;
             $phone = $request->phone;
+            $code = $request->code ?? ""; 
             $products = array_map('intval', explode(',', $request->products));
             $quantities = array_map('intval', explode(',', $request->quantities));
             
@@ -86,6 +113,7 @@ class OrderController extends Controller
             $order->note = $note ?? "Nothings";
             $order->ship_id = 1;
             $order->total = $total;
+            $order->discount = $this->discount($code, $total);
             $order->status = 0;
             $order->payment_id = 1;
             $order->user_id = $user->id;
