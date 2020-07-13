@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Modules\Product\Entities\ProductCollection;
 use Modules\Product\Entities\Product;
-// use Modules\Product\Transformers\CategoryResource;
+use Modules\Product\Transformers\ProductResource;
 
 class ProductCollectionController extends Controller
 {
@@ -29,7 +29,7 @@ class ProductCollectionController extends Controller
             return response()->json([
                 'status'=>1,
                 'count'=>count($products),
-                'data'=>$products
+                'data'=>ProductResource::collection($products)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

@@ -20,7 +20,7 @@ class ProductController extends Controller
                 'status'=>1,
                 'ids'=>$ids,
                 'count'=>count($data),
-                'data'=>$data
+                'data'=>ProductResource::collection($data),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
