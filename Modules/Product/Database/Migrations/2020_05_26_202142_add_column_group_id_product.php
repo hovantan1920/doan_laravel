@@ -15,7 +15,7 @@ class AddColumnGroupIdProduct extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->integer('group_id')->unsigned();
-            $table->foreign('group_id')->references('id')->on('product_groups');
+            $table->foreign('group_id')->references('id')->on('product_groups')->onDelete('cascade');
         });
     }
 

@@ -21,11 +21,11 @@ class CreateOrdersTable extends Migration
             $table->String("note");
             $table->String("address");
             $table->integer('payment_id')->unsigned();
-            $table->foreign('payment_id')->references('id')->on('method_payment');
+            $table->foreign('payment_id')->references('id')->on('method_payment')->onDelete('cascade');
             $table->integer('ship_id')->unsigned();
-            $table->foreign('ship_id')->references('id')->on('method_ship');
+            $table->foreign('ship_id')->references('id')->on('method_ship')->onDelete('cascade');
             $table->integer("user_id")->nullable()->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
