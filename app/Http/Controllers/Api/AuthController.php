@@ -104,6 +104,7 @@ class AuthController extends Controller
             $user->email = $request->email ?? $user->email;
             $user->birthday = $request->birthday ?? $user->birthday;
             $user->gender = $request->gender ?? $user->gender;
+            $user->numberphone = $request->numberphone ?? $user->numberphone;
             $user->save();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->accessToken;
