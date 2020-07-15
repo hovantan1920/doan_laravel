@@ -44,7 +44,7 @@ class OrderController extends Controller
 
     public function detail(Request $request){
         try {            
-            $order = Order::findOrFail($id);
+            $order = Order::findOrFail($request->order_id);
             return response()->json([
                 'status'=> 1,
                 'data'=> new OrderResource($order)

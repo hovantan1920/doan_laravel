@@ -13,4 +13,12 @@ class Order extends Model
     {
         return $this->hasMany('Modules\Booking\Entities\OrderDetail');
     }
+    public function ship()
+    {
+        return $this->belongsTo('Modules\Booking\Entities\MethodShip');
+    }
+    public function payment()
+    {
+        return $this->belongsTo('Modules\Booking\Entities\MethodPayment');
+    }
 }
