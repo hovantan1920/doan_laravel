@@ -20,7 +20,7 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <div class="breadcrumbs-img" style="background-image: url({{url('images/cover-img-1.jpg')}});">
+                    <div class="breadcrumbs-img" style="background-image: url({{url($object['image_source'])}});">
                         <h2>{{$object['title']}}</h2>
                     </div>
                     <div class="menu text-center">
