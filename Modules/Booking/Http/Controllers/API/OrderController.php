@@ -24,15 +24,33 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try { 
-
             $offset = $request->offset ?? 0;
             $limit = $request->offset ?? 10;
-
             $user = Auth::user();           
-            $order = Order::where('user_id', $user->id)->offset($offset)->limit($limit)->get();
+            $order = Order::where('user_id', $user->id)->where('status', '>=', 0)->offset($offset)->limit($limit)->get();
             return response()->json([
                 'status'=> 1,
                 'data'=> OrderResource::collection($order)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status'=> 0,
+                'msg'=> $th->getMessage()
+            ]);
+        }
+    }
+
+    public function cancel(Request $request){
+        try {            
+            $user = Auth::user();  
+            $order = Order::findOrFail($request->order_id);
+            if($order->user_id == $user->id){
+                $order->status = -1;
+                $order->save();
+            }
+            return response()->json([
+                'status'=> 1,
+                'data'=> 'success'
             ]);
         } catch (\Throwable $th) {
             return response()->json([

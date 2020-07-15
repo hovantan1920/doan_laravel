@@ -19,6 +19,7 @@ Route::group(['prefix' => 'order'], function () {
         Route::post('', 'API\OrderController@index');
         Route::post('/create', 'API\OrderController@store');
         Route::post('/get', 'API\OrderController@detail');
+        Route::post('/cancel', 'API\OrderController@cancel');
     });
 });
 
