@@ -24,6 +24,7 @@ Route::group(['prefix' => '/cart.html'], function () {
 
 Route::get('/cart-checkout.html', 'Controller@cartCheckout');
 Route::get('/cart-complete.html', 'Controller@cartComplete');
+Route::get('/search.html', 'Controller@search');
 
 Route::get('/{slug}.html', 'Controller@pages');
 

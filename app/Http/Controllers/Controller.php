@@ -42,7 +42,7 @@ class Controller extends BaseController
 
     public function index(){
         $banners = Banner::orderBy('index', 'asc')->limit(3)->get();
-        $groups = ProductGroup::orderBy('index', 'asc')->limit(3)->get();
+        $groups = ProductGroup::orderBy('index', 'asc')->limit(5)->get();
         $collections = [];
         foreach ($groups as $col) {
             $products = Product::where('group_id', $col->id)->limit(Config('product.limit'))->get();
@@ -56,6 +56,27 @@ class Controller extends BaseController
         ]);
     }
 
+    public function search(Request $request){
+        $keyword = $request->keyword;
+        $other = ['title'=> 'Brand', 'children'=>Brand::get()];
+        $products = Product::where('title', "like", "%$keyword%")
+            ->paginate(Config('product.limit'));
+        $object = [
+            "title" => "Search",
+            "image_source" => 'images/cover-img-1.jpg',
+        ];
+        $siblings = Category::where('parent_id', ">", "0")->get();
+
+        return View('collection', 
+            [
+                'pageName'=> $this->pageName . ' - Search page',
+                'object'=>$object,
+                'other' => $other,
+                'products'=>$products,
+                'siblings' => $siblings
+            ]);
+    }
+    
     public function pages($slug){
 
         $category = Category::where('slug', $slug)->first();

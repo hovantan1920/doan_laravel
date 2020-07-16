@@ -66,7 +66,7 @@
   
       <div class="row">
         <div class="col-md-12 text-center">
-          <p><a href="#" class="btn btn-light btn-lg">Shop All Products</a></p>
+          <p><a href="{{url('search.html')}}" class="btn btn-light btn-lg">Shop All Products</a></p>
         </div>
       </div>
     </div>

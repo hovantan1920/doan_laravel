@@ -6,9 +6,9 @@
           <div id="colorlib-logo"><a href="{{url('/')}}">F-Interesting</a></div>
         </div>
         <div class="col-sm-5 col-md-3">
-              <form action="#" class="search-wrap">
+              <form action="{{url('search.html')}}" class="search-wrap" method="GET">
                  <div class="form-group">
-                    <input type="search" class="form-control search" placeholder="Search">
+                    <input name="keyword" type="search" class="form-control search" placeholder="Search">
                     <button class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
                  </div>
               </form>
