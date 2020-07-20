@@ -247,10 +247,16 @@ class Controller extends BaseController
         }
         OrderDetail::insert($details);
 
-        Mail::to($user)->send(new MailBookingNotify($user));
-        if (Mail::failures()) {
+        try {
+            Mail::to($user)->send(new MailBookingNotify($user));
+            if (Mail::failures()) {
+                return view('error');
+            }
+        } catch (\Throwable $th) {
             return view('error');
         }
+
+        
         return redirect('/cart.html/complete');
     }
 

@@ -16,16 +16,20 @@ class ProductCollectionController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
+
+            $limit = $request->limit ?? 12;
+            $offset = $request->offset ?? 0;
+
             $user = Auth::user();
             $collection = $user->productCollection()->get();
             $ids = [];
             foreach ($collection as $col) {
                 array_push($ids, $col->product_id);
             }
-            $products = Product::whereIn('id', $ids)->get();
+            $products = Product::whereIn('id', $ids)->offset($offset)->limit($limit)->get();
             return response()->json([
                 'status'=>1,
                 'count'=>count($products),
