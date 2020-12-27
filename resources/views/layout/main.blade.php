@@ -26,6 +26,7 @@
             function getCart(){
                 var products = JSON.parse(Cookies.get('cart-products') ?? "[]");
                 var quantities = JSON.parse(Cookies.get('cart-quantities') ?? "[]");
+                
                 console.log(products);
                 console.log(quantities);
                 $('#span-cart').text(products.length);
